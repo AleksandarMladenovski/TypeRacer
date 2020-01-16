@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "850690284059",
+    "firebase_url": "https://type-racer-light.firebaseio.com",
+    "project_id": "type-racer-light",
+    "storage_bucket": "type-racer-light.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:850690284059:android:57ced7f7cdcc08a65c36be",
+        "android_client_info": {
+          "package_name": "com.extremedesign.typeracer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "850690284059-8k9vmorftm8595r8gu3mu7t7060gkk0t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYzkm9OWqc8-euinCRIwKE0LIe-39T3Jk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "850690284059-8k9vmorftm8595r8gu3mu7t7060gkk0t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

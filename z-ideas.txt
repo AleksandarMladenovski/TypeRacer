@@ -1,0 +1,10 @@
+-method for joining a group
+Android *public (groupId) findAGroup(userId)
+	call javascript findGroup
+	reference the groupId and listen for other users
+	listen to time till start
+	
+JS* function findGroup 
+    iterate database for empty slots
+    when slot is found add userId in the group
+    return groupId
