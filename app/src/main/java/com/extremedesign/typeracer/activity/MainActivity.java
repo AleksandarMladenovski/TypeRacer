@@ -3,6 +3,7 @@ package com.extremedesign.typeracer.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,7 +31,7 @@ private User user;
         user =FirebaseRepo.getCurrentUser();
 
         ImageView photoImage=findViewById(R.id.photoImageButton);
-        Glide.with(this).load(user.getUserInfo().getPhotoUrl()).into(photoImage);
+        Glide.with(this).load(Uri.parse(user.getUserInfo().getPhotoUrl())).into(photoImage);
         photoImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
