@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="5dp"
+        android:textAlignment="center"
+        android:textSize="50sp" />
+
+    <ImageView
+        android:id="@+id/user_login_image"
+        android:contentDescription="@string/logo_type_racer"
+        android:layout_width="@dimen/logo_w_h"
+        android:layout_height="@dimen/logo_w_h"
+        android:layout_above="@id/login_email"
+        android:layout_centerHorizontal="true"
+        android:scaleType="fitXY"
+        android:layout_marginBottom="50dp"
+        android:src="@mipmap/ic_launcher" />
+
+    <EditText
+        android:id="@+id/login_email"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_above="@id/login_password"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/et_custom"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        android:padding="15dp"
+        android:textSize="15sp" />
+
+    <EditText
+        android:id="@+id/login_password"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/et_custom"
+        android:hint="@string/hint_password"
+        android:inputType="textPassword"
+        android:padding="15dp"
+        android:textSize="15sp" />
+
+    <Button
+        android:id="@+id/login_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_password"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/btn_custom"
+        android:text="@string/sign_in"
+        android:textColor="@android:color/white" />
+
+    <Button
+        android:id="@+id/btn_reset_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_button"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="20dp"
+        android:background="@null"
+        android:text="@string/btn_forgot_password"
+        android:textColor="@color/colorAccent"
+        android:textSize="12sp" />
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/log_in_facebook"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_reset_password"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/btn_custom"
+        android:textSize="15sp" />
+
+    <ProgressBar
+        android:id="@+id/login_progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/icon_swipe_left"
+        android:layout_below="@id/log_in_facebook"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center|bottom"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/icon_swipe_left"
+        android:contentDescription="@string/logo_type_racer"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_above="@id/swipeRight"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/ic_arrow_right" />
+
+    <TextView
+        android:id="@+id/swipeRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:text="@string/swipe_left_for_register"
+        android:textSize="15sp" />
+
+</RelativeLayout>
