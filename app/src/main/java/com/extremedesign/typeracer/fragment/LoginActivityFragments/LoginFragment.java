@@ -62,7 +62,7 @@ import static com.extremedesign.typeracer.Utils.RC_SIGN_IN;
 import static com.firebase.ui.auth.AuthUI.TAG;
 
 public class LoginFragment extends Fragment {
-    private EditText inputEmail, inputPassword;
+    private EditText inputPassword;
     private Button btnSignIn, btnResetPassword;
     private ImageView btnPassVisibility;
     private SignInButton googleSignIn;
@@ -72,6 +72,8 @@ public class LoginFragment extends Fragment {
     private CallbackManager mCallbackManager;
     private DisplayCloseListener listener;
     private TextView tv_incorrect_msg;
+    EmailEditTextFragment emailEditTextFragment;
+
     public LoginFragment() {
         // Required empty public constructor
     }
@@ -87,13 +89,17 @@ public class LoginFragment extends Fragment {
         // Inflate the layout for this fragment
         View itemView= inflater.inflate(R.layout.fragment_login, container, false);
 
+//        EmailEditTextFragment e=  itemView.findViewById()
 
         //textView
         tv_incorrect_msg=itemView.findViewById(R.id.login_incorrect_msg);
 
         //editText
-        inputEmail = itemView.findViewById(R.id.login_email);
         inputPassword=itemView.findViewById(R.id.login_password);
+
+        //email fragment
+        emailEditTextFragment=new EmailEditTextFragment();
+        getFragmentManager().beginTransaction().replace(R.id.login_email_frame_layout,emailEditTextFragment).commit();
 
         //buttons
         btnSignIn = itemView.findViewById(R.id.login_button);
@@ -156,24 +162,23 @@ public class LoginFragment extends Fragment {
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
                 isSendSuccessful(true);
 
-                if (TextUtils.isEmpty(email)) {
-                    isSendSuccessful(false);
-                    return;
+                if (emailEditTextFragment.isEmailAddressValid()) {
+                    isSendSuccessful(true);
+                    progressBar.setVisibility(View.VISIBLE);
+
+
+                    auth.signInWithEmailAndPassword(emailEditTextFragment.getEmailAddress(), password)
+                            .addOnCompleteListener(onNormalLoginCompleteListener());
                 }
 
                 if (TextUtils.isEmpty(password)) {
                     isSendSuccessful(false);
-                    return;
                 }
 
-                progressBar.setVisibility(View.VISIBLE);
 
-                auth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(onNormalLoginCompleteListener());
 
             }
         });
@@ -290,15 +295,11 @@ public class LoginFragment extends Fragment {
 
     private void isSendSuccessful(boolean attempt){
         if(attempt){
-            inputEmail.setBackground(getResources().getDrawable(R.drawable.et_custom_26a69a_color));
             inputPassword.setBackground(getResources().getDrawable(R.drawable.et_custom_26a69a_color));
-
             tv_incorrect_msg.setVisibility(View.GONE);
         }
         else{
-            inputEmail.setBackground(getResources().getDrawable(R.drawable.et_custom_red_color));
             inputPassword.setBackground(getResources().getDrawable(R.drawable.et_custom_red_color));
-
             tv_incorrect_msg.setVisibility(View.VISIBLE);
         }
     }

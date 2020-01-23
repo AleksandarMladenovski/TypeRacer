@@ -9,6 +9,6 @@ public class Utils {
         if(target==null){
             return false;
         }
-        return (TextUtils.isEmpty(target) || !Patterns.EMAIL_ADDRESS.matcher(target).matches());
+        return !(TextUtils.isEmpty(target) || !Patterns.EMAIL_ADDRESS.matcher(target).matches());
     }
 }

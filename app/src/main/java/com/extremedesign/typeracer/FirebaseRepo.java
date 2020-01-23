@@ -15,6 +15,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,6 +38,11 @@ public class FirebaseRepo {
     private static WeakReference<GoogleSignInClient> mGoogleSignInClient = new WeakReference<GoogleSignInClient>(null);
     private static FirebaseStorage firebaseStorage;
 
+
+
+    public static void sendPasswordResetEmail(String email,OnCompleteListener <Void> listener){
+        getAuthINSTANCE().sendPasswordResetEmail(email).addOnCompleteListener(listener);
+    }
 
     public static void createUserWithEmailAndPassword(String email, String password, final String name, final JobWorker listener) {
         final FirebaseAuth auth = getAuthINSTANCE();
