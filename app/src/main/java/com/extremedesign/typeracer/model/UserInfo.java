@@ -1,5 +1,7 @@
 package com.extremedesign.typeracer.model;
 
+import androidx.annotation.NonNull;
+
 public class UserInfo {
     private String name;
     private String email;
@@ -46,5 +48,11 @@ public class UserInfo {
 
     public void setEmailVerified(boolean emailVerified) {
         this.emailVerified = emailVerified;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return name + " " + email + " " + photoUrl + " " + isEmailVerified();
     }
 }

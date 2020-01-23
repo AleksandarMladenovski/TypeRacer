@@ -59,6 +59,7 @@ private User user;
                 FirebaseAuth auth=FirebaseAuth.getInstance();
                 auth.signOut();
                 LoginManager.getInstance().logOut();
+                FirebaseRepo.getGoogleSignInClient(MainActivity.this).signOut();
                 Intent newIntent=new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(newIntent);
                 finish();

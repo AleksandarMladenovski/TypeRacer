@@ -2,6 +2,8 @@ package com.extremedesign.typeracer.model;
 
 import android.net.Uri;
 
+import androidx.annotation.NonNull;
+
 public class User {
     private String uid;
     private UserInfo userInfo;
@@ -28,5 +30,11 @@ public class User {
 
     public void setUserInfo(UserInfo userInfo) {
         this.userInfo = userInfo;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return uid + " :"+userInfo.toString();
     }
 }

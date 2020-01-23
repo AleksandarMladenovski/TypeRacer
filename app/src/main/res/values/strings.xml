@@ -50,6 +50,11 @@
     <string name="re_type_password">Re-type Password</string>
     <string name="hint_user_name">Name</string>
     <string name="logo_type_racer">logo_type_racer</string>
+    <string name="invalid_email_address">Invalid email address</string>
+    <string name="your_confirmation_link_will_be_sent_to_your_email_address">A confirmation link will be sent to your email address</string>
+    <string name="text_send">Send</string>
+    <string name="log_in_incorrect_msg">Incorrect Email or password. Please try again</string>
+    <string name="email_example_john_doe">example: John.doe@gmail.com</string>
 
 </resources>
 

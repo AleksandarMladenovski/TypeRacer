@@ -15,14 +15,25 @@
 
     <ImageView
         android:id="@+id/user_login_image"
-        android:contentDescription="@string/logo_type_racer"
         android:layout_width="@dimen/logo_w_h"
         android:layout_height="@dimen/logo_w_h"
         android:layout_above="@id/login_email"
         android:layout_centerHorizontal="true"
-        android:scaleType="fitXY"
         android:layout_marginBottom="50dp"
+        android:contentDescription="@string/logo_type_racer"
+        android:scaleType="fitXY"
         android:src="@mipmap/ic_launcher" />
+    <TextView
+        android:id="@+id/login_incorrect_msg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_above="@id/login_email"
+        android:layout_marginBottom="10dp"
+        android:text="@string/log_in_incorrect_msg"
+        android:textColor="@android:color/holo_red_dark"
+        android:visibility="gone"/>
 
     <EditText
         android:id="@+id/login_email"
@@ -42,70 +53,90 @@
         android:id="@+id/login_password"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_centerInParent="true"
+        android:layout_above="@id/btn_reset_password"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginBottom="10dp"
         android:background="@drawable/et_custom"
         android:hint="@string/hint_password"
         android:inputType="textPassword"
         android:padding="15dp"
         android:textSize="15sp" />
-
-    <Button
-        android:id="@+id/login_button"
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/login_pass_visibility"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/login_password"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/btn_custom"
-        android:text="@string/sign_in"
-        android:textColor="@android:color/white" />
+        android:src="@drawable/ic_visibility_off_black_24dp"
+        android:layout_gravity="center"
+        android:layout_alignEnd="@+id/login_password"
+        android:layout_below="@id/login_email"
+        android:layout_above="@id/btn_reset_password"
+        android:layout_marginEnd="8dp" />
 
     <Button
         android:id="@+id/btn_reset_password"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/login_button"
+        android:layout_centerInParent="true"
+        android:layout_alignParentEnd="true"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="5dp"
         android:layout_marginRight="20dp"
         android:background="@null"
         android:text="@string/btn_forgot_password"
         android:textColor="@color/colorAccent"
         android:textSize="12sp" />
 
+
+    <Button
+        android:id="@+id/login_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_reset_password"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/btn_custom"
+        android:text="@string/sign_in"
+        android:textColor="@android:color/white" />
+
     <com.facebook.login.widget.LoginButton
         android:id="@+id/log_in_facebook"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btn_reset_password"
+        android:layout_below="@id/login_button"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="15dp"
         android:layout_marginRight="20dp"
-        android:background="@drawable/btn_custom"
-        android:textSize="15sp" />
+        android:textSize="17sp" />
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/log_in_google"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/log_in_facebook"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:textSize="17sp" />
 
     <ProgressBar
         android:id="@+id/login_progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/icon_swipe_left"
-        android:layout_below="@id/log_in_facebook"
+        android:layout_below="@id/log_in_google"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center|bottom"
         android:visibility="gone" />
 
     <ImageView
         android:id="@+id/icon_swipe_left"
-        android:contentDescription="@string/logo_type_racer"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_above="@id/swipeRight"
         android:layout_centerHorizontal="true"
+        android:contentDescription="@string/logo_type_racer"
         android:src="@drawable/ic_arrow_right" />
 
     <TextView

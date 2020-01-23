@@ -31,7 +31,7 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class GatherPlayersFragment extends Fragment implements IOnBackPressed {
+public class GatherPlayersFragment extends Fragment {
 
     private DatabaseReference databaseReference;
     private ArrayList<String> users;
@@ -177,8 +177,5 @@ public class GatherPlayersFragment extends Fragment implements IOnBackPressed {
                 .child("users").child("user "+ groupCount).child("wpm").setValue("0");
     }
 
-    @Override
-    public boolean onBackPressed() {
-        return false;
-    }
+
 }
