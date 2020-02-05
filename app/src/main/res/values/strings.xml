@@ -55,6 +55,8 @@
     <string name="text_send">Send</string>
     <string name="log_in_incorrect_msg">Incorrect Email or password. Please try again</string>
     <string name="email_example_john_doe">example: John.doe@gmail.com</string>
+    <string name="john_doe">John Doe</string>
+    <string name="name">Name</string>
 
 </resources>
 

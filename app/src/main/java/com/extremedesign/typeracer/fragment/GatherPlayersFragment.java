@@ -16,11 +16,9 @@ import android.view.ViewGroup;
 import com.extremedesign.typeracer.FirebaseRepo;
 import com.extremedesign.typeracer.PlayerListAdapter;
 import com.extremedesign.typeracer.R;
-import com.extremedesign.typeracer.listener.IOnBackPressed;
 import com.extremedesign.typeracer.listener.PlayersReadyListener;
 import com.extremedesign.typeracer.model.FriendlyPlayer;
 import com.extremedesign.typeracer.model.User;
-import com.extremedesign.typeracer.model.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -78,7 +76,7 @@ public class GatherPlayersFragment extends Fragment {
                 int count=1;
                 for(DataSnapshot group:dataSnapshot.getChildren()){
                     count++;
-                    int groupCount=Integer.parseInt(String.valueOf(group.child("count").getValue()));
+                    int groupCount=Integer.parseInt(String.valueOf(group.child("timer").getValue()));
                     if(groupCount<4){
                         groupCount++;
                         addPlayerToGroup(group.getKey(),String.valueOf(groupCount));
@@ -104,7 +102,6 @@ public class GatherPlayersFragment extends Fragment {
     }
 
     private void listenForOtherPlayers(String key) {
-
 
         databaseReference.child("groups").child(key).child("users").addValueEventListener(getPlayerListener());
 

@@ -2,37 +2,30 @@ package com.extremedesign.typeracer.fragment.LoginActivityFragments;
 
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
-import android.text.TextUtils;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.extremedesign.typeracer.DataRepository.RepositoryInstance;
 import com.extremedesign.typeracer.FirebaseRepo;
 import com.extremedesign.typeracer.R;
-import com.extremedesign.typeracer.Utils;
 import com.extremedesign.typeracer.activity.MainActivity;
+import com.extremedesign.typeracer.fragment.UI.EmailEditTextFragment;
+import com.extremedesign.typeracer.fragment.UI.PasswordEditTextFragment;
 import com.extremedesign.typeracer.listener.DisplayCloseListener;
-import com.extremedesign.typeracer.listener.IOnBackPressed;
 import com.extremedesign.typeracer.listener.JobWorker;
-import com.extremedesign.typeracer.model.User;
-import com.extremedesign.typeracer.model.UserInfo;
+import com.extremedesign.typeracer.listener.ProfileImageListener;
+import com.extremedesign.typeracer.model.ProfileImage;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -46,25 +39,19 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.core.Repo;
+
+import java.util.List;
 
 import static com.extremedesign.typeracer.Utils.RC_SIGN_IN;
-import static com.firebase.ui.auth.AuthUI.TAG;
 
 public class LoginFragment extends Fragment {
-    private EditText inputPassword;
     private Button btnSignIn, btnResetPassword;
-    private ImageView btnPassVisibility;
     private SignInButton googleSignIn;
     private LoginButton loginButton;
     private ProgressBar progressBar;
@@ -72,8 +59,8 @@ public class LoginFragment extends Fragment {
     private CallbackManager mCallbackManager;
     private DisplayCloseListener listener;
     private TextView tv_incorrect_msg;
-    EmailEditTextFragment emailEditTextFragment;
-
+    private EmailEditTextFragment emailEditTextFragment;
+    private PasswordEditTextFragment passwordEditTextFragment;
     public LoginFragment() {
         // Required empty public constructor
     }
@@ -89,24 +76,23 @@ public class LoginFragment extends Fragment {
         // Inflate the layout for this fragment
         View itemView= inflater.inflate(R.layout.fragment_login, container, false);
 
-//        EmailEditTextFragment e=  itemView.findViewById()
 
         //textView
         tv_incorrect_msg=itemView.findViewById(R.id.login_incorrect_msg);
 
-        //editText
-        inputPassword=itemView.findViewById(R.id.login_password);
 
         //email fragment
         emailEditTextFragment=new EmailEditTextFragment();
         getFragmentManager().beginTransaction().replace(R.id.login_email_frame_layout,emailEditTextFragment).commit();
 
+        //password fragment
+        passwordEditTextFragment=new PasswordEditTextFragment();
+        getFragmentManager().beginTransaction().replace(R.id.login_password_frame_layout,passwordEditTextFragment).commit();
+
         //buttons
         btnSignIn = itemView.findViewById(R.id.login_button);
         btnResetPassword=itemView.findViewById(R.id.btn_reset_password);
 
-        //imageView
-        btnPassVisibility=itemView.findViewById(R.id.login_pass_visibility);
 
         //cardView
 
@@ -122,32 +108,12 @@ public class LoginFragment extends Fragment {
         //firebase auth
         auth = FirebaseRepo.getAuthINSTANCE();
 
-
         listenForgottenPassword();
         listenForFacebookLogin();
         listenForNormalLogin();
         listenForGoogleLogin();
-        listenForPassVisibility();
         return itemView;
     }
-
-    private void listenForPassVisibility() {
-        btnPassVisibility.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               Drawable currentDrawable = btnPassVisibility.getDrawable();
-               if(currentDrawable.getConstantState().equals(getResources().getDrawable(R.drawable.ic_visibility_off_black_24dp).getConstantState())){
-                   btnPassVisibility.setImageDrawable(getResources().getDrawable(R.drawable.ic_visibility_black_24dp));
-                   inputPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-               }
-               else{
-                   btnPassVisibility.setImageDrawable(getResources().getDrawable(R.drawable.ic_visibility_off_black_24dp));
-                   inputPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-               }
-            }
-        });
-    }
-
 
     private void listenForgottenPassword(){
         btnResetPassword.setOnClickListener(new View.OnClickListener() {
@@ -162,24 +128,18 @@ public class LoginFragment extends Fragment {
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String password = inputPassword.getText().toString().trim();
                 isSendSuccessful(true);
-
-                if (emailEditTextFragment.isEmailAddressValid()) {
-                    isSendSuccessful(true);
+                if (emailEditTextFragment.isEmailAddressValid() && passwordEditTextFragment.isPasswordValid()) {
+//                    isSendSuccessful(true);
                     progressBar.setVisibility(View.VISIBLE);
 
-
-                    auth.signInWithEmailAndPassword(emailEditTextFragment.getEmailAddress(), password)
+                    auth.signInWithEmailAndPassword(emailEditTextFragment.getEmailAddress(), passwordEditTextFragment.getPassword())
                             .addOnCompleteListener(onNormalLoginCompleteListener());
                 }
 
-                if (TextUtils.isEmpty(password)) {
+                else  {
                     isSendSuccessful(false);
                 }
-
-
-
             }
         });
     }
@@ -279,10 +239,19 @@ public class LoginFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-
-                    FirebaseRepo.createCurrentUser();
                     if(task.getResult().getAdditionalUserInfo().isNewUser()){
-                        FirebaseRepo.saveUserToFirebaseDatabase();
+                        RepositoryInstance.getTypeRacerRepository(getContext()).getImageByName("baloon.jpg", new ProfileImageListener() {
+                            @Override
+                            public void getImages(List<ProfileImage> images) {
+                                if(images.size()!=0){
+                                    FirebaseRepo.createNewCurrentUser(images.get(0).getImageUrl());
+                                    FirebaseRepo.saveUserToFirebaseDatabase();
+                                }
+                            }
+                        });
+                    }
+                    else{
+                        FirebaseRepo.createCurrentUser();
                     }
                     userLogIn();
                 } else {
@@ -295,11 +264,13 @@ public class LoginFragment extends Fragment {
 
     private void isSendSuccessful(boolean attempt){
         if(attempt){
-            inputPassword.setBackground(getResources().getDrawable(R.drawable.et_custom_26a69a_color));
+            emailEditTextFragment.isSendSuccessful(true);
+            passwordEditTextFragment.isSendSuccessful(true);
             tv_incorrect_msg.setVisibility(View.GONE);
         }
         else{
-            inputPassword.setBackground(getResources().getDrawable(R.drawable.et_custom_red_color));
+            emailEditTextFragment.isSendSuccessful(false);
+            passwordEditTextFragment.isSendSuccessful(false);
             tv_incorrect_msg.setVisibility(View.VISIBLE);
         }
     }

@@ -8,24 +8,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.extremedesign.typeracer.FirebaseRepo;
 import com.extremedesign.typeracer.R;
-import com.extremedesign.typeracer.Utils;
-import com.extremedesign.typeracer.listener.IOnBackPressed;
+import com.extremedesign.typeracer.fragment.UI.EmailEditTextFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
 /**
@@ -64,11 +59,13 @@ public class UserPasswordResetFragment extends Fragment {
 
     private boolean isEmailValid(){
         if(emailEditTextFragment.isEmailAddressValid()){
+            emailEditTextFragment.isSendSuccessful(true);
             tv_confirmation_send_email.setTextColor(getResources().getColor(R.color.color_black));
             tv_confirmation_send_email.setText(getResources().getString(R.string.your_confirmation_link_will_be_sent_to_your_email_address));
             return true;
         }
         else{
+            emailEditTextFragment.isSendSuccessful(false);
             tv_confirmation_send_email.setTextColor(getResources().getColor(R.color.color_red));
             tv_confirmation_send_email.setText(getResources().getString(R.string.invalid_email_address));
             return false;

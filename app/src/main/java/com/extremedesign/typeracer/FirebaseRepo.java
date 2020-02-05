@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.extremedesign.typeracer.DataRepository.RepositoryInstance;
 import com.extremedesign.typeracer.listener.JobWorker;
 import com.extremedesign.typeracer.model.User;
 import com.extremedesign.typeracer.model.UserInfo;
@@ -39,12 +40,12 @@ public class FirebaseRepo {
     private static FirebaseStorage firebaseStorage;
 
 
-
-    public static void sendPasswordResetEmail(String email,OnCompleteListener <Void> listener){
+    public static void sendPasswordResetEmail(String email, OnCompleteListener<Void> listener) {
         getAuthINSTANCE().sendPasswordResetEmail(email).addOnCompleteListener(listener);
     }
 
-    public static void createUserWithEmailAndPassword(String email, String password, final String name, final JobWorker listener) {
+    public static void createUserWithEmailAndPassword(String email, String password, final String name, final String imageUrl, final JobWorker listener) {
+
         final FirebaseAuth auth = getAuthINSTANCE();
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -54,36 +55,24 @@ public class FirebaseRepo {
 
                             FirebaseStorage storage = getFirebaseStorage();
                             final boolean isUserNew = task.getResult().getAdditionalUserInfo().isNewUser();
-
-                            storage.getReference().child("baloon.jpg").getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            FirebaseUser user = auth.getCurrentUser();
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(name)
+                                    .setPhotoUri(Uri.parse(imageUrl))
+                                    .build();
+                            user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
-                                public void onComplete(@NonNull Task<Uri> task) {
+                                public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        FirebaseUser user = auth.getCurrentUser();
-                                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                                .setDisplayName(name)
-                                                .setPhotoUri(task.getResult())
-                                                .build();
-                                        user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    FirebaseRepo.createCurrentUser();
-                                                    if (isUserNew) {
-                                                        FirebaseRepo.saveUserToFirebaseDatabase();
-                                                    }
-                                                    listener.jobFinished(true);
-                                                } else {
-                                                    listener.jobFinished(false);
-                                                    //TODO
-                                                    //update failed
-                                                    //do something
-                                                }
-                                            }
-                                        });
+                                        FirebaseRepo.createCurrentUser();
+                                        if (isUserNew) {
+                                            FirebaseRepo.saveUserToFirebaseDatabase();
+                                        }
+                                        listener.jobFinished(true);
                                     } else {
                                         listener.jobFinished(false);
-                                        //cannot acces photo in storage for some reason
+                                        //TODO
+                                        //update failed
                                         //do something
                                     }
                                 }
@@ -147,6 +136,32 @@ public class FirebaseRepo {
         return gso;
     }
 
+    public static boolean createNewCurrentUser(final String imageUrl) {
+        final FirebaseUser user = getAuthINSTANCE().getCurrentUser();
+        if (user != null) {
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setPhotoUri(Uri.parse(imageUrl))
+                .build();
+        user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                User player = new User(user.getUid(), new UserInfo(
+                        user.getDisplayName(),
+                        user.getEmail(),
+                        imageUrl,
+                        user.isEmailVerified()));
+                setCurrentUser(player);
+            }
+        });
+
+
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
     public static boolean createCurrentUser() {
         FirebaseUser user = getAuthINSTANCE().getCurrentUser();
         if (user != null) {
@@ -156,7 +171,6 @@ public class FirebaseRepo {
                     String.valueOf(user.getPhotoUrl()),
                     user.isEmailVerified()));
             setCurrentUser(player);
-            Log.e("plyyyy",player.toString());
             return true;
         } else {
             return false;

@@ -53,31 +53,37 @@
         android:id="@+id/login_email_frame_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-         android:layout_above="@id/login_password"
-       android:layout_marginBottom="10dp"/>
+         android:layout_above="@id/login_password_frame_layout"
+       android:layout_marginBottom="5dp" />
 
-    <EditText
-        android:id="@+id/login_password"
+    <FrameLayout
+        android:id="@+id/login_password_frame_layout"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_above="@id/btn_reset_password"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/et_custom"
-        android:hint="@string/hint_password"
-        android:inputType="textPassword"
-        android:padding="15dp"
-        android:textSize="15sp" />
-    <ImageView
-        android:id="@+id/login_pass_visibility"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_visibility_off_black_24dp"
-        android:layout_gravity="center"
-        android:layout_alignEnd="@+id/login_password"
-        android:layout_below="@id/login_email_frame_layout"
-        android:layout_above="@id/btn_reset_password"
-        android:layout_marginEnd="8dp" />
+        android:layout_above="@+id/btn_reset_password" />
+
+<!--    <EditText-->
+<!--        android:id="@+id/login_password"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_above="@id/btn_reset_password"-->
+<!--        android:layout_marginLeft="20dp"-->
+<!--        android:layout_marginRight="20dp"-->
+<!--        android:background="@drawable/et_custom"-->
+<!--        android:hint="@string/hint_password"-->
+<!--        android:inputType="textPassword"-->
+<!--        android:padding="15dp"-->
+<!--        android:textSize="15sp" />-->
+<!--    <ImageView-->
+<!--        android:id="@+id/login_pass_visibility"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:src="@drawable/ic_visibility_off_black_24dp"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:layout_alignEnd="@+id/login_password"-->
+<!--        android:layout_below="@id/login_email_frame_layout"-->
+<!--        android:layout_above="@id/btn_reset_password"-->
+<!--        android:layout_marginEnd="8dp" />-->
 
     <Button
         android:id="@+id/btn_reset_password"
@@ -87,6 +93,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
         android:background="@null"
         android:text="@string/btn_forgot_password"
         android:textColor="@color/colorAccent"

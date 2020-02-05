@@ -1,4 +1,4 @@
-package com.extremedesign.typeracer.fragment.LoginActivityFragments;
+package com.extremedesign.typeracer.fragment.UI;
 
 
 import android.os.Bundle;
@@ -10,12 +10,9 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.extremedesign.typeracer.FirebaseRepo;
 import com.extremedesign.typeracer.R;
 import com.extremedesign.typeracer.Utils;
 
@@ -92,14 +89,7 @@ public class EmailEditTextFragment extends Fragment {
     }
     public boolean isEmailAddressValid(){
         final String emailAddress = inputEmail.getText().toString().trim();
-        if(Utils.isEmailValid(emailAddress)){
-            isSendSuccessful(true);
-            return true;
-        }
-        else{
-            isSendSuccessful(false);
-            return false;
-        }
+        return Utils.isEmailValid(emailAddress);
     }
     public String getEmailAddress(){
         return inputEmail.getText().toString().trim();

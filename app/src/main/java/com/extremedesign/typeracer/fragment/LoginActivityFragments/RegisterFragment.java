@@ -15,13 +15,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.extremedesign.typeracer.DataRepository.RepositoryInstance;
 import com.extremedesign.typeracer.FirebaseRepo;
 import com.extremedesign.typeracer.R;
 import com.extremedesign.typeracer.Utils;
 import com.extremedesign.typeracer.activity.MainActivity;
+import com.extremedesign.typeracer.fragment.UI.EmailEditTextFragment;
+import com.extremedesign.typeracer.fragment.UI.PasswordEditTextFragment;
 import com.extremedesign.typeracer.listener.JobWorker;
+import com.extremedesign.typeracer.listener.ProfileImageListener;
+import com.extremedesign.typeracer.model.ProfileImage;
 import com.extremedesign.typeracer.model.User;
 import com.extremedesign.typeracer.model.UserInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,11 +42,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.util.List;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class RegisterFragment extends Fragment {
-    private EditText inputName,inputEmail,inputPassword,inputRePassword;
+    private EmailEditTextFragment emailEditTextFragment;
+    private PasswordEditTextFragment passwordEditTextFragment;
+    private TextView nameError,emailError,passError,nameText;
+    private EditText inputName;
     private Button btnRegister;
     private FirebaseAuth auth;
     private ProgressBar progressBar;
@@ -55,11 +66,20 @@ public class RegisterFragment extends Fragment {
         // Inflate the layout for this fragment
         View itemView = inflater.inflate(R.layout.fragment_register, container, false);
         inputName=itemView.findViewById(R.id.register_name);
-        inputEmail=itemView.findViewById(R.id.register_email);
-        inputPassword=itemView.findViewById(R.id.register_password);
-        inputRePassword=itemView.findViewById(R.id.register_re_password);
         btnRegister=itemView.findViewById(R.id.btn_register);
         progressBar=itemView.findViewById(R.id.register_progressBar);
+
+        nameError=itemView.findViewById(R.id.tv_register_name_error);
+        nameText=itemView.findViewById(R.id.register_tv_email_text);
+        emailError=itemView.findViewById(R.id.tv_register_email_error);
+        passError=itemView.findViewById(R.id.tv_register_password_error);
+
+
+        emailEditTextFragment= new EmailEditTextFragment();
+        getFragmentManager().beginTransaction().replace(R.id.register_email_frame_layout,emailEditTextFragment).commit();
+        passwordEditTextFragment=new PasswordEditTextFragment();
+        getFragmentManager().beginTransaction().replace(R.id.register_password_frame_layout,passwordEditTextFragment).commit();
+
          auth = FirebaseRepo.getAuthINSTANCE();
         onRegisterButtonPressed();
 
@@ -70,29 +90,34 @@ public class RegisterFragment extends Fragment {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                resetColors();
                 final String name = inputName.getText().toString();
-                String email = inputEmail.getText().toString();
-                String password = inputPassword.getText().toString();
-                String rePassword = inputRePassword.getText().toString();
+                final String email = emailEditTextFragment.getEmailAddress();
+                final String password = passwordEditTextFragment.getPassword();
 
-
-                if (inputIsCorrect(name, email, password, rePassword)) {
+                if (inputIsCorrect(name)) {
                     progressBar.setVisibility(View.VISIBLE);
-                    FirebaseRepo.createUserWithEmailAndPassword(email, password, name, new JobWorker() {
+                    RepositoryInstance.getTypeRacerRepository(getContext()).getImageByName("baloon.jpg", new ProfileImageListener() {
                         @Override
-                        public void jobFinished(boolean state) {
-                            if(state){
-                                Toast.makeText(getContext(), "Authentication Successful.",
-                                    Toast.LENGTH_SHORT).show();
-                                userLogIn();
-                            }
-                            else{
-                                Toast.makeText(getContext(), "Authentication Failed.",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                            progressBar.setVisibility(View.GONE);
+                        public void getImages(List<ProfileImage> images) {
+                            FirebaseRepo.createUserWithEmailAndPassword(email, password, name,images.get(0).getImageUrl(), new JobWorker() {
+                                @Override
+                                public void jobFinished(boolean state) {
+                                    if(state){
+                                        Toast.makeText(getContext(), "Authentication Successful.",
+                                                Toast.LENGTH_SHORT).show();
+                                        userLogIn();
+                                    }
+                                    else{
+                                        Toast.makeText(getContext(), "Authentication Failed.",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                    progressBar.setVisibility(View.GONE);
+                                }
+                            });
                         }
                     });
+
 
                 }
 
@@ -100,22 +125,32 @@ public class RegisterFragment extends Fragment {
         });
     }
 
-    private boolean inputIsCorrect(String name,String email,String password,String rePassword) {
+    private void resetColors(){
+        nameText.setTextColor(getResources().getColor(R.color.color_light_blue));
+        inputName.setBackground(getResources().getDrawable(R.drawable.et_custom_26a69a_color));
+        nameError.setVisibility(View.GONE);
+        emailEditTextFragment.isSendSuccessful(true);
+        emailError.setVisibility(View.GONE);
+        passwordEditTextFragment.isSendSuccessful(true);
+        passError.setVisibility(View.GONE);
+    }
+
+    private boolean inputIsCorrect(String name) {
         boolean canContinue=true;
         if(name.length()==0){
-            inputName.setError("Please enter a name");
+            nameError.setVisibility(View.VISIBLE);
+            nameText.setTextColor(getResources().getColor(R.color.color_red));
+            inputName.setBackground(getResources().getDrawable(R.drawable.et_custom_red_color));
             canContinue=false;
         }
-        if(Utils.isEmailValid(email)){
-            inputEmail.setError("Please enter a valid email address");
+        if(!emailEditTextFragment.isEmailAddressValid()){
+            emailEditTextFragment.isSendSuccessful(false);
+            emailError.setVisibility(View.VISIBLE);
             canContinue=false;
         }
-        if(password.length()<6){
-            inputPassword.setError("Your password must be more than 6 characters");
-            canContinue=false;
-        }
-        if(!password.equals(rePassword)){
-            inputRePassword.setError("Passwords didn't match. Try again");
+        if(!passwordEditTextFragment.isPasswordValid()){
+            passwordEditTextFragment.isSendSuccessful(false);
+            passError.setVisibility(View.VISIBLE);
             canContinue=false;
         }
 
