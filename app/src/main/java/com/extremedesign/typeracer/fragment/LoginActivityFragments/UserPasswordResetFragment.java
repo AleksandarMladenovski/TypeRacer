@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.extremedesign.typeracer.FirebaseRepo;
 import com.extremedesign.typeracer.R;
+import com.extremedesign.typeracer.fragment.UI.CustomActionBarFragment;
 import com.extremedesign.typeracer.fragment.UI.EmailEditTextFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -28,11 +29,11 @@ import com.google.firebase.auth.FirebaseAuth;
  */
 public class UserPasswordResetFragment extends Fragment {
     private Button btn_send;
-    private ImageView btn_back;
     private TextView tv_confirmation_send_email;
     private FirebaseAuth auth;
     private ProgressBar progressBar;
     private EmailEditTextFragment emailEditTextFragment;
+    private CustomActionBarFragment customActionBarFragment;
     public UserPasswordResetFragment() {
         // Required empty public constructor
     }
@@ -43,14 +44,19 @@ public class UserPasswordResetFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View itemView = inflater.inflate(R.layout.fragment_user_password_reset, container, false);
-        btn_back=itemView.findViewById(R.id.icon_forgot_pass_backButton);
         btn_send=itemView.findViewById(R.id.button_forgot_pass_send);
         tv_confirmation_send_email=itemView.findViewById(R.id.tv_confirmation_email);
-        auth = FirebaseRepo.getAuthINSTANCE();
+        auth = FirebaseAuth.getInstance();
         progressBar=itemView.findViewById(R.id.forgot_pass_progressBar);
+
         emailEditTextFragment=new EmailEditTextFragment();
-        getFragmentManager().beginTransaction().replace(R.id.email_frame_layout, emailEditTextFragment).commit();
-        setBackButtonListener();
+        getFragmentManager().beginTransaction()
+                .replace(R.id.email_frame_layout, emailEditTextFragment).commit();
+
+        customActionBarFragment=new CustomActionBarFragment("Forgot Password");
+        getFragmentManager().beginTransaction()
+                .replace(R.id.custom_action_bar_frame_layout,customActionBarFragment).commit();
+
         setSendButtonListener();
 
         return itemView;
@@ -95,15 +101,6 @@ public class UserPasswordResetFragment extends Fragment {
         });
     }
 
-    private void setBackButtonListener() {
-        btn_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               getActivity().onBackPressed();
-            }
-        });
-
-    }
     private void createSuccessfulDialog(String emailAddress) {
         AlertDialog.Builder alertBuilder=new AlertDialog.Builder(getContext());
         alertBuilder.setTitle("Reset password");

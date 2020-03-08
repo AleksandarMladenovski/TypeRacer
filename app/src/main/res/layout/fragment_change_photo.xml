@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.ChangePhotoFragment">
+    <FrameLayout
+        android:id="@+id/customToolbarLayout_ChangePhotoFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <ImageView
+        android:id="@+id/user_photo_chosen_image"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/customToolbarLayout_ChangePhotoFragment"
+        android:src="@drawable/default1" />
+    <TextView
+        android:id="@+id/user_photo_select_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Choose an image:"
+        android:layout_below="@id/user_photo_chosen_image"
+        android:layout_marginTop="10dp"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/user_photo_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/user_photo_select_text"
+        android:layout_marginTop="10dp"/>
+    <Button
+        android:id="@+id/user_photo_save_changes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/user_photo_recycler_view"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/btn_custom"
+        android:text="@string/save_changes"
+        android:textColor="@android:color/white" />
+</RelativeLayout>

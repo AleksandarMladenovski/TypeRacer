@@ -48,7 +48,8 @@ public class GatherPlayersFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView=inflater.inflate(R.layout.fragment_gather_players, container, false);
-        databaseReference = FirebaseRepo.getDatabaseInstance();
+//        databaseReference = FirebaseRepo.getINSTANCE().getDatabaseInstance();
+        databaseReference = null;
         users=new ArrayList<>();
 
         RecyclerView recyclerView=rootView.findViewById(R.id.recyclerViewPlayers);
@@ -57,8 +58,9 @@ public class GatherPlayersFragment extends Fragment {
         recyclerView.setAdapter(listAdapter);
 
 
-        User user=FirebaseRepo.getCurrentUser();
-        FriendlyPlayer currUser=new FriendlyPlayer(user.getUserInfo().getName(),user.getUserInfo().getPhotoUrl());
+//        User user=FirebaseRepo.getINSTANCE().getCurrentUser();
+        User user=null;
+        FriendlyPlayer currUser=new FriendlyPlayer(user.getName(),user.getPhotoName());
 
         listAdapter.addPlayer(currUser);
         users.add(user.getUid());
@@ -166,10 +168,12 @@ public class GatherPlayersFragment extends Fragment {
         };
     }
     private void addPlayerToGroup(String group,String groupCount){
+        //        String uid=FirebaseRepo.getINSTANCE().getCurrentUser().getUid();
+        String uid=null;
         databaseReference.child("groups").child(group)
                 .child("count").setValue(String.valueOf(groupCount));
         databaseReference.child("groups").child(group)
-                .child("users").child("user "+ groupCount).child("uid").setValue(FirebaseRepo.getCurrentUser().getUid());
+                .child("users").child("user "+ groupCount).child("uid").setValue(uid);
         databaseReference.child("groups").child(group)
                 .child("users").child("user "+ groupCount).child("wpm").setValue("0");
     }

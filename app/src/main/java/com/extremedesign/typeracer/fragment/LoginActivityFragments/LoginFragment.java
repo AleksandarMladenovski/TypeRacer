@@ -7,6 +7,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +17,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.extremedesign.typeracer.DataRepository.RepositoryInstance;
+import com.extremedesign.typeracer.DataRepository.RepositoryTypeRacer.RepositoryViewModel;
 import com.extremedesign.typeracer.FirebaseRepo;
 import com.extremedesign.typeracer.R;
 import com.extremedesign.typeracer.activity.MainActivity;
@@ -26,10 +29,12 @@ import com.extremedesign.typeracer.listener.DisplayCloseListener;
 import com.extremedesign.typeracer.listener.JobWorker;
 import com.extremedesign.typeracer.listener.ProfileImageListener;
 import com.extremedesign.typeracer.model.ProfileImage;
+import com.extremedesign.typeracer.model.User;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -38,24 +43,27 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.OAuthProvider;
 import com.google.firebase.database.core.Repo;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static com.extremedesign.typeracer.Utils.RC_SIGN_IN;
 
 public class LoginFragment extends Fragment {
     private Button btnSignIn, btnResetPassword;
-    private SignInButton googleSignIn;
-    private LoginButton loginButton;
+    private ImageView option_facebook_login,option_google_login,option_yahoo_login,option_twitter_login;
     private ProgressBar progressBar;
-    private FirebaseAuth auth;
+    private RepositoryViewModel repositoryViewModel;
     private CallbackManager mCallbackManager;
     private DisplayCloseListener listener;
     private TextView tv_incorrect_msg;
@@ -76,10 +84,23 @@ public class LoginFragment extends Fragment {
         // Inflate the layout for this fragment
         View itemView= inflater.inflate(R.layout.fragment_login, container, false);
 
+        repositoryViewModel=ViewModelProviders.of(this).get(RepositoryViewModel.class);
+        repositoryViewModel.getCurrentUser().observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                if(user!=null){
+                    repositoryViewModel.getCurrentUser().removeObservers(LoginFragment.this);
+                    progressBar.setVisibility(View.GONE);
+                    userLogIn();
+                }
+            }
 
+        });
         //textView
         tv_incorrect_msg=itemView.findViewById(R.id.login_incorrect_msg);
 
+        //mcallbackmanager
+        mCallbackManager = CallbackManager.Factory.create();
 
         //email fragment
         emailEditTextFragment=new EmailEditTextFragment();
@@ -97,22 +118,54 @@ public class LoginFragment extends Fragment {
         //cardView
 
         //google sign in button
-        googleSignIn=itemView.findViewById(R.id.log_in_google);
-        googleSignIn.setSize(SignInButton.SIZE_STANDARD);
+        option_google_login=itemView.findViewById(R.id.option_log_in_google);
 
-        //facebook sign in button
-        loginButton=itemView.findViewById(R.id.log_in_facebook);
+        //yahoo sign in button
+        option_yahoo_login=itemView.findViewById(R.id.option_log_in_yahoo);
+
+        //twitter sing in button
+        option_twitter_login=itemView.findViewById(R.id.option_log_in_twitter);
 
         progressBar=itemView.findViewById(R.id.login_progressBar);
 
-        //firebase auth
-        auth = FirebaseRepo.getAuthINSTANCE();
+        option_facebook_login=itemView.findViewById(R.id.option_log_in_facebook);
 
         listenForgottenPassword();
         listenForFacebookLogin();
         listenForNormalLogin();
         listenForGoogleLogin();
+        listenForYahooLogin();
+        listenForTwitterLogin();
         return itemView;
+    }
+
+    private void listenForTwitterLogin() {
+        option_twitter_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
+                repositoryViewModel.logInWithProvider("twitter.com",onLoginCompleteListener(),getActivity());
+
+            }
+        });
+
+
+    }
+
+    private void listenForYahooLogin() {
+        option_yahoo_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
+                repositoryViewModel.logInWithProvider("yahoo.com",onLoginCompleteListener(),getActivity());
+            }
+        });
+    }
+
+    private void userLogIn() {
+        Intent i = new Intent(getContext(), MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
     }
 
     private void listenForgottenPassword(){
@@ -133,7 +186,8 @@ public class LoginFragment extends Fragment {
 //                    isSendSuccessful(true);
                     progressBar.setVisibility(View.VISIBLE);
 
-                    auth.signInWithEmailAndPassword(emailEditTextFragment.getEmailAddress(), passwordEditTextFragment.getPassword())
+                    //TODO
+                    repositoryViewModel.getFirebaseRepo().getAuthINSTANCE().signInWithEmailAndPassword(emailEditTextFragment.getEmailAddress(), passwordEditTextFragment.getPassword())
                             .addOnCompleteListener(onNormalLoginCompleteListener());
                 }
 
@@ -144,34 +198,8 @@ public class LoginFragment extends Fragment {
         });
     }
 
-    private void listenForFacebookLogin() {
-        mCallbackManager = CallbackManager.Factory.create();
-        loginButton.setReadPermissions("email", "public_profile");
-        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                handleFacebookAccessToken(loginResult.getAccessToken());
-            }
-
-            @Override
-            public void onCancel() {
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-            }
-        });
-    }
-
-    private void handleFacebookAccessToken(AccessToken token) {
-        progressBar.setVisibility(View.VISIBLE);
-        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-        auth.signInWithCredential(credential)
-                .addOnCompleteListener(onLoginCompleteListener());
-    }
-
     private void listenForGoogleLogin() {
-        googleSignIn.setOnClickListener(new View.OnClickListener() {
+        option_google_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 GoogleSignInClient mGoogleSignInClient= FirebaseRepo.getGoogleSignInClient(getContext());
@@ -184,8 +212,103 @@ public class LoginFragment extends Fragment {
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         progressBar.setVisibility(View.VISIBLE);
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        auth.signInWithCredential(credential)
+        repositoryViewModel.getFirebaseRepo().getAuthINSTANCE().signInWithCredential(credential)
                 .addOnCompleteListener(onLoginCompleteListener());
+    }
+
+
+    private void facebookLogin(){
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList( "email", "public_profile"));
+        LoginManager.getInstance().registerCallback(mCallbackManager,
+                new FacebookCallback<LoginResult>()
+                {
+                    @Override
+                    public void onSuccess(LoginResult loginResult)
+                    {
+                        handleFacebookAccessToken(loginResult.getAccessToken());
+                    }
+
+                    @Override
+                    public void onCancel()
+                    {
+                        // App code
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception)
+                    {
+                        // App code
+                    }
+                });
+    }
+    private void listenForFacebookLogin() {
+        option_facebook_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                facebookLogin();
+            }
+        });
+    }
+
+    private void handleFacebookAccessToken(AccessToken token) {
+        progressBar.setVisibility(View.VISIBLE);
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        repositoryViewModel.getFirebaseRepo().getAuthINSTANCE().signInWithCredential(credential)
+                .addOnCompleteListener(onLoginCompleteListener());
+    }
+
+    private OnCompleteListener <AuthResult>  onNormalLoginCompleteListener() {
+        return new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    isSendSuccessful(true);
+                    repositoryViewModel.getFirebaseRepo().createCurrentUser(false);
+
+//                    userLogIn();
+                } else {
+                    isSendSuccessful(false);
+                    progressBar.setVisibility(View.GONE);
+                }
+
+            }
+        };
+    }
+
+    private OnCompleteListener<AuthResult>  onLoginCompleteListener(){
+        return new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    if(task.getResult().getAdditionalUserInfo().isNewUser()){
+                        repositoryViewModel.getFirebaseRepo().createCurrentUser(false);
+                                    //FirebaseRepo.saveUserToFirebaseDatabase();
+                    }
+                    else{
+                        repositoryViewModel.getFirebaseRepo().createCurrentUser(true);
+
+                    }
+//                    userLogIn();
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getContext(),"Login is not successful",Toast.LENGTH_LONG);
+                }
+
+            }
+        };
+    }
+
+    private void isSendSuccessful(boolean attempt){
+        if(attempt){
+            emailEditTextFragment.isSendSuccessful(true);
+            passwordEditTextFragment.isSendSuccessful(true);
+            tv_incorrect_msg.setVisibility(View.GONE);
+        }
+        else{
+            emailEditTextFragment.isSendSuccessful(false);
+            passwordEditTextFragment.isSendSuccessful(false);
+            tv_incorrect_msg.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -205,73 +328,6 @@ public class LoginFragment extends Fragment {
         }
         else {
             mCallbackManager.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-
-
-    private void userLogIn() {
-        Intent i = new Intent(getContext(), MainActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(i);
-    }
-    private OnCompleteListener <AuthResult>  onNormalLoginCompleteListener() {
-        return new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    isSendSuccessful(true);
-                    FirebaseRepo.createCurrentUser();
-                    if(task.getResult().getAdditionalUserInfo().isNewUser()){
-                        FirebaseRepo.saveUserToFirebaseDatabase();
-                    }
-                    userLogIn();
-                } else {
-                    isSendSuccessful(false);
-                }
-                progressBar.setVisibility(View.GONE);
-            }
-        };
-    }
-
-    private OnCompleteListener<AuthResult>  onLoginCompleteListener(){
-        return new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    if(task.getResult().getAdditionalUserInfo().isNewUser()){
-                        RepositoryInstance.getTypeRacerRepository(getContext()).getImageByName("baloon.jpg", new ProfileImageListener() {
-                            @Override
-                            public void getImages(List<ProfileImage> images) {
-                                if(images.size()!=0){
-                                    FirebaseRepo.createNewCurrentUser(images.get(0).getImageUrl());
-                                    FirebaseRepo.saveUserToFirebaseDatabase();
-                                }
-                            }
-                        });
-                    }
-                    else{
-                        FirebaseRepo.createCurrentUser();
-                    }
-                    userLogIn();
-                } else {
-
-                }
-                progressBar.setVisibility(View.GONE);
-            }
-        };
-    }
-
-    private void isSendSuccessful(boolean attempt){
-        if(attempt){
-            emailEditTextFragment.isSendSuccessful(true);
-            passwordEditTextFragment.isSendSuccessful(true);
-            tv_incorrect_msg.setVisibility(View.GONE);
-        }
-        else{
-            emailEditTextFragment.isSendSuccessful(false);
-            passwordEditTextFragment.isSendSuccessful(false);
-            tv_incorrect_msg.setVisibility(View.VISIBLE);
         }
     }
 

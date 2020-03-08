@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.extremedesign.typeracer.model.ProfileImage;
+import com.extremedesign.typeracer.model.User;
 
 import java.util.List;
 
@@ -18,6 +19,11 @@ public interface TypeRacerDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertProfileImage(ProfileImage images);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertUser(User user);
+
+    @Query("SELECT * FROM User WHERE uid LIKE :id ")
+    User getUserByUid(String id);
     @Query("SELECT * FROM ProfileImage")
     List<ProfileImage> getAllProfileImages();
 

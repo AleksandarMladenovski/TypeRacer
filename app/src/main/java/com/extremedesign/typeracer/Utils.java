@@ -11,4 +11,5 @@ public class Utils {
         }
         return !(TextUtils.isEmpty(target) || !Patterns.EMAIL_ADDRESS.matcher(target).matches());
     }
+
 }

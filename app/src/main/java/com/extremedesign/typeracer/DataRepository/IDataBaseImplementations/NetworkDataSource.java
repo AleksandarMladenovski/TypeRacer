@@ -1,8 +1,48 @@
 package com.extremedesign.typeracer.DataRepository.IDataBaseImplementations;
 
 
-public class NetworkDataSource  // implements IDataSource
+import androidx.lifecycle.LiveData;
+
+import com.extremedesign.typeracer.listener.JobWorker;
+import com.extremedesign.typeracer.listener.ProfileImageListener;
+import com.extremedesign.typeracer.model.ProfileImage;
+import com.extremedesign.typeracer.model.User;
+
+import java.util.List;
+
+public class NetworkDataSource  implements IDataSource
  {
+  @Override
+  public void insertUser(User user) {
+
+  }
+
+  @Override
+  public LiveData<User> getCurrentUser(String uid) {
+   return null;
+  }
+
+  @Override
+  public void insertDataProfileImage(ProfileImage profileImage, JobWorker listener) {
+
+  }
+
+  @Override
+  public void insertDataProfileImages(List<ProfileImage> profileImages) {
+
+  }
+
+  @Override
+  public void getDataProfileImages(ProfileImageListener listener) {
+
+  }
+
+  @Override
+  public void getProfileImageByName(String name, ProfileImageListener listener) {
+
+  }
+
+
 //    private static GetRetrofitDataService dataServicee;
 //
 //    public NetworkDataSource(Retrofit retrofit) {

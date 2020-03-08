@@ -1,17 +1,19 @@
 package com.extremedesign.typeracer.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.extremedesign.typeracer.DataRepository.RepositoryInstance;
+import com.extremedesign.typeracer.DataRepository.RepositoryTypeRacer.RepositoryViewModel;
 import com.extremedesign.typeracer.FirebaseRepo;
+import com.extremedesign.typeracer.fragment.ChangePhotoFragment;
+import com.extremedesign.typeracer.listener.ProfilePictureListener;
 import com.extremedesign.typeracer.model.User;
 import com.extremedesign.typeracer.R;
 import com.extremedesign.typeracer.fragment.DisplayPlayerFragment;
@@ -26,17 +28,25 @@ public class MainActivity extends AppCompatActivity {
 //    RetrofitClient retrofitClient;
 private DatabaseReference mDatabase;
 private User user;
+private RepositoryViewModel repositoryViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        imageLogo=itemView.findViewById(R.id.user_login_image);
-//        Bitmap bitmap=(RepositoryInstance.getTypeRacerRepository(getContext()).loadImageBitmap("baloon.jpg"));
-//        imageLogo.setImageBitmap(bitmap);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        user =FirebaseRepo.getCurrentUser();
+        final ImageView photoImage=findViewById(R.id.photoImageButton);
 
-        ImageView photoImage=findViewById(R.id.photoImageButton);
-        Glide.with(this).load(Uri.parse(user.getUserInfo().getPhotoUrl())).into(photoImage);
+        final RepositoryViewModel repositoryViewModel= ViewModelProviders.of(this).get(RepositoryViewModel.class);
+
+        user =repositoryViewModel.getCurrentUser().getValue();
+
+        repositoryViewModel.getCurrentUser().observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                int id = getResources().getIdentifier(user.getPhotoName(), "drawable", MainActivity.this.getPackageName());
+                photoImage.setImageResource(id);
+                MainActivity.this.user=user;
+            }
+        });
         photoImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,7 +54,25 @@ private User user;
                     @Override
                     public void onPlayerDisplayClosed() {
                         findViewById(R.id.main_FrameLayout).setVisibility(View.GONE);
+
                     }
+
+                    @Override
+                    public void openPlayerChangePhoto() {
+
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.main_FrameLayout,new ChangePhotoFragment(new ProfilePictureListener() {
+                                    @Override
+                                    public void onPictureChosen(Drawable drawable,String name) {
+//                                        photoImage.setImageDrawable(drawable);
+                                        repositoryViewModel.getFirebaseRepo().updateUserProfilePicture(name);
+
+                                    }
+                                }))
+                                .addToBackStack("Change Photo")
+                                .commit();
+                    }
+
                 };
                 getSupportFragmentManager()
                         .beginTransaction()
@@ -80,5 +108,10 @@ private User user;
         });
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

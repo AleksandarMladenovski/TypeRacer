@@ -9,8 +9,9 @@ import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.extremedesign.typeracer.model.ProfileImage;
+import com.extremedesign.typeracer.model.User;
 
-@Database(entities = {ProfileImage.class},version = 1)
+@Database(entities = {ProfileImage.class, User.class},version = 1)
 public abstract class TypeRacerDatabase extends RoomDatabase {
     private static TypeRacerDatabase INSTANCE;
     public abstract TypeRacerDAO typeRacerDAO();

@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:src="@drawable/ic_launcher_background"
+        android:src="@drawable/typeracer_logo"
         />
     <ProgressBar
         android:id="@+id/splash_screen_progressBar"

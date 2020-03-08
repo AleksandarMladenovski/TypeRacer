@@ -7,6 +7,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,7 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.extremedesign.typeracer.DataRepository.RepositoryInstance;
+import com.extremedesign.typeracer.DataRepository.RepositoryTypeRacer.RepositoryViewModel;
 import com.extremedesign.typeracer.FirebaseRepo;
 import com.extremedesign.typeracer.R;
 import com.extremedesign.typeracer.Utils;
@@ -48,12 +50,12 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class RegisterFragment extends Fragment {
+    RepositoryViewModel repositoryViewModel;
     private EmailEditTextFragment emailEditTextFragment;
     private PasswordEditTextFragment passwordEditTextFragment;
     private TextView nameError,emailError,passError,nameText;
     private EditText inputName;
     private Button btnRegister;
-    private FirebaseAuth auth;
     private ProgressBar progressBar;
     public RegisterFragment() {
         // Required empty public constructor
@@ -65,6 +67,21 @@ public class RegisterFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View itemView = inflater.inflate(R.layout.fragment_register, container, false);
+
+        repositoryViewModel= ViewModelProviders.of(this).get(RepositoryViewModel.class);
+
+
+        //TODO BAD IPMPLEMENTATION
+        repositoryViewModel.getCurrentUser().observe(getViewLifecycleOwner(), new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                if(user!=null){
+                    repositoryViewModel.getCurrentUser().removeObservers(RegisterFragment.this);
+                    userLogIn();
+
+                }
+            }
+        });
         inputName=itemView.findViewById(R.id.register_name);
         btnRegister=itemView.findViewById(R.id.btn_register);
         progressBar=itemView.findViewById(R.id.register_progressBar);
@@ -80,7 +97,6 @@ public class RegisterFragment extends Fragment {
         passwordEditTextFragment=new PasswordEditTextFragment();
         getFragmentManager().beginTransaction().replace(R.id.register_password_frame_layout,passwordEditTextFragment).commit();
 
-         auth = FirebaseRepo.getAuthINSTANCE();
         onRegisterButtonPressed();
 
         return itemView;
@@ -97,28 +113,11 @@ public class RegisterFragment extends Fragment {
 
                 if (inputIsCorrect(name)) {
                     progressBar.setVisibility(View.VISIBLE);
-                    RepositoryInstance.getTypeRacerRepository(getContext()).getImageByName("baloon.jpg", new ProfileImageListener() {
-                        @Override
-                        public void getImages(List<ProfileImage> images) {
-                            FirebaseRepo.createUserWithEmailAndPassword(email, password, name,images.get(0).getImageUrl(), new JobWorker() {
-                                @Override
-                                public void jobFinished(boolean state) {
-                                    if(state){
-                                        Toast.makeText(getContext(), "Authentication Successful.",
-                                                Toast.LENGTH_SHORT).show();
-                                        userLogIn();
-                                    }
-                                    else{
-                                        Toast.makeText(getContext(), "Authentication Failed.",
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-                                    progressBar.setVisibility(View.GONE);
-                                }
-                            });
-                        }
-                    });
 
 
+                    repositoryViewModel.getFirebaseRepo().createUserWithEmailAndPassword(email, password, name);
+
+                    progressBar.setVisibility(View.GONE);
                 }
 
             }

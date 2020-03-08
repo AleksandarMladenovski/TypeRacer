@@ -8,12 +8,13 @@
     <item android:drawable="@color/colorPrimary" />
 
     <item
-        android:drawable="@drawable/ic_clear_black_24dp"
+        android:drawable="@drawable/typeracer_logo"
         android:gravity="center">
 
 <!--        <bitmap-->
 <!--            android:src="@drawable/ic_launcher_background"-->
 <!--            android:gravity="center" />-->
     </item>
+
 
 </layer-list>

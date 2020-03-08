@@ -2,10 +2,15 @@ package com.extremedesign.typeracer.DataRepository.IDataBaseImplementations;
 
 import android.content.Context;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import com.extremedesign.typeracer.DataRepository.RoomDatabase.TypeRacerDatabase;
 import com.extremedesign.typeracer.listener.JobWorker;
 import com.extremedesign.typeracer.listener.ProfileImageListener;
 import com.extremedesign.typeracer.model.ProfileImage;
+import com.extremedesign.typeracer.model.User;
+
 import java.util.List;
 
 public class DatabaseDataSource implements IDataSource {
@@ -13,8 +18,34 @@ public class DatabaseDataSource implements IDataSource {
 
     public DatabaseDataSource() {
     }
+
     public DatabaseDataSource(Context context) {
         this.context=context;
+    }
+
+    @Override
+    public void insertUser(final User user) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                   TypeRacerDatabase.getDatabase(context).typeRacerDAO().insertUser(user);
+            }
+        });
+    }
+
+    @Override
+    public LiveData<User> getCurrentUser(final String userId) {
+        final MutableLiveData<User> data = new MutableLiveData<>();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                User user=TypeRacerDatabase.getDatabase(context).typeRacerDAO().getUserByUid(userId);
+                data.setValue(user);
+            }
+        }).start();
+
+        return data;
     }
 
 

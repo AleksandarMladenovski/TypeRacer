@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.extremedesign.typeracer.fragment.UI.CustomActionBarFragment;
 import com.extremedesign.typeracer.model.User;
 import com.extremedesign.typeracer.R;
 import com.extremedesign.typeracer.listener.PlayerDisplayClose;
@@ -21,7 +22,8 @@ import com.extremedesign.typeracer.listener.PlayerDisplayClose;
  */
 public class DisplayPlayerFragment extends Fragment {
     private User user;
-    private PlayerDisplayClose listener;
+        private PlayerDisplayClose listener;
+    private CustomActionBarFragment customActionBarFragment;
     public DisplayPlayerFragment() {
         // Required empty public constructor
     }
@@ -40,10 +42,20 @@ public class DisplayPlayerFragment extends Fragment {
         TextView email=itemView.findViewById(R.id.user_email);
         ImageView image=itemView.findViewById(R.id.user_photo_image);
 
-        name.setText(user.getUserInfo().getName());
-        email.setText(user.getUserInfo().getEmail());
-        Glide.with(getContext()).load(user.getUserInfo().getPhotoUrl()).into(image);
+        name.setText(user.getName());
+        email.setText(user.getEmail());
 
+        int id = getResources().getIdentifier(user.getPhotoName(), "drawable", getContext().getPackageName());
+        image.setImageResource(id);
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            listener.openPlayerChangePhoto();
+            }
+        });
+        customActionBarFragment=new CustomActionBarFragment("Profile");
+        getFragmentManager().beginTransaction()
+                .replace(R.id.display_player_custom_action_bar,customActionBarFragment).commit();
         return itemView;
     }
 

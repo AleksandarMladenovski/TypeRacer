@@ -57,6 +57,7 @@
     <string name="email_example_john_doe">example: John.doe@gmail.com</string>
     <string name="john_doe">John Doe</string>
     <string name="name">Name</string>
+    <string name="save_changes">SAVE CHANGES</string>
 
 </resources>
 

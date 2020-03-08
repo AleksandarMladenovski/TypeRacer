@@ -1,19 +1,31 @@
 package com.extremedesign.typeracer.model;
 
-import android.net.Uri;
-
 import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
+@Entity
 public class User {
+
+    @PrimaryKey
+    @NonNull
     private String uid;
-    private UserInfo userInfo;
+    private String name;
+    private String email;
+    private String photoName;
+    private boolean emailVerified;
 
     public User() {
     }
 
-    public User(String uid,UserInfo userInfo) {
-        this.uid=uid;
-        this.userInfo = userInfo;
+    @Ignore
+    public User(String uid, String name, String email, String photoName, boolean emailVerified) {
+        this.uid = uid;
+        this.name = name;
+        this.email = email;
+        this.photoName = photoName;
+        this.emailVerified = emailVerified;
     }
 
     public String getUid() {
@@ -24,17 +36,35 @@ public class User {
         this.uid = uid;
     }
 
-    public UserInfo getUserInfo() {
-        return userInfo;
+    public String getName() {
+        return name;
     }
 
-    public void setUserInfo(UserInfo userInfo) {
-        this.userInfo = userInfo;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    @NonNull
-    @Override
-    public String toString() {
-        return uid + " :"+userInfo.toString();
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhotoName() {
+        return photoName;
+    }
+
+    public void setPhotoName(String photoName) {
+        this.photoName = photoName;
+    }
+
+    public boolean isEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
     }
 }
