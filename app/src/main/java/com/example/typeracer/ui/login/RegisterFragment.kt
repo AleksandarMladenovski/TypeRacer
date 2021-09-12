@@ -17,6 +17,7 @@ import com.example.typeracer.databinding.FragmentRegisterBinding
 import com.example.typeracer.ui.activity.LoginActivity
 import com.example.typeracer.ui.activity.MainActivity
 import com.example.typeracer.utils.Utils
+import com.example.typeracer.utils.Validator
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 class RegisterFragment : Fragment() {
@@ -42,17 +43,17 @@ class RegisterFragment : Fragment() {
         binding.btnRegister.setOnClickListener{
             val email = binding.email.text.toString()
             val name = binding.name.text.toString()
-            val password = binding.password.toString()
+            val password = binding.password.text.toString()
             var isValid=true
-            if(email.isNullOrEmpty() || !Utils.isEmailValid(email)){
+            if(!Validator.isEmailValid(email)){
                 binding.email.error="Please insert a valid email!"
                 isValid=false
             }
-            if(name.isNullOrEmpty()){
+            if(name.isEmpty()){
                 binding.name.error="Please insert a name!"
                 isValid=false
             }
-            if(password.isNullOrEmpty() || password.length<8){
+            if(!Validator.isPasswordValid(password)){
                 binding.password.error="Password too short!"
                 isValid=false
             }

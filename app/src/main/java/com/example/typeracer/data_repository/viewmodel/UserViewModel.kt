@@ -12,7 +12,13 @@ class UserViewModel(private val repository: UserRepository) : ViewModel() {
     fun createUserByBasic(email: String, name: String, password: String) =
         repository.createUserByBasic(email, name, password)
 
-    fun loginUserByBasic(email: String, password: String) {
+    fun loginUserByBasic(email: String, password: String) =
+        repository.loginUserByBasic(email,password)
 
-    }
+    fun getCurrentUser() = repository.getUser()
+
+    fun resetUserPassword(email: String) = repository.resetUserPassword(email)
+
+    fun logOutUser() = repository.logOutUser()
+
 }
