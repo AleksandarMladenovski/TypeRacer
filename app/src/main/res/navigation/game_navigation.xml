@@ -6,7 +6,15 @@
 
     <fragment
         android:id="@+id/splashGameFragment"
-        android:name="com.example.typeracer.ui.splash_game.model.SplashGameFragment">
+        android:name="com.example.typeracer.ui.game.model.SplashGameFragment">
+        <action
+            android:id="@+id/action_splash_game_fragment_to_game_fragment"
+            app:destination="@id/gameFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/gameFragment"
+        android:name="com.example.typeracer.ui.game.model.GameFragment">
     </fragment>
 
 </navigation>

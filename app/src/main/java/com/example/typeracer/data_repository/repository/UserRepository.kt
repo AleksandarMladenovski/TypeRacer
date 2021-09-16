@@ -2,7 +2,7 @@ package com.example.typeracer.data_repository.repository
 
 import android.app.Activity
 import androidx.lifecycle.MutableLiveData
-import com.example.typeracer.data_repository.Firebase
+import com.example.typeracer.data_repository.FirebaseNetwork
 import com.example.typeracer.data_repository.callback.BooleanCallback
 import com.example.typeracer.data_repository.callback.UserCallback
 import com.example.typeracer.data_repository.i_data_source_impl.UserNetworkSource
@@ -74,7 +74,7 @@ class UserRepository {
 
     fun getUser(): MutableLiveData<User> {
         if (currentUser.value == null) {
-            currentUser.value = Firebase.getFirebaseAuth().currentUser?.toUser()
+            currentUser.value = FirebaseNetwork.getFirebaseAuth().currentUser?.toUser()
         }
         return currentUser
     }

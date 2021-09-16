@@ -8,6 +8,8 @@ import com.example.typeracer.ui.custom_lobby.model.CustomLobbyFragment
 import com.example.typeracer.ui.custom_lobby.viemodel.CustomLobbyViewModel
 import com.example.typeracer.ui.edit_profile.model.EditProfileFragment
 import com.example.typeracer.ui.edit_profile.viewmodel.EditProfileViewModel
+import com.example.typeracer.ui.game.model.GameFragment
+import com.example.typeracer.ui.game.model.SplashGameFragment
 import com.example.typeracer.ui.home.HomeFragment
 import com.example.typeracer.ui.home.HomeViewModel
 import com.example.typeracer.ui.login.LoginFragment
@@ -46,12 +48,15 @@ class TypeRacerApplication : Application() {
         single { SettingsFragment() }
         single { CustomLobbyFragment() }
         single { EditProfileFragment() }
+        single { SplashGameFragment() }
+        single { GameFragment() }
 
         single { UserRepository() }
         viewModel { CustomLobbyViewModel() }
         viewModel { EditProfileViewModel(get()) }
         viewModel { UserViewModel(get()) }
         viewModel { HomeViewModel(get()) }
+        
         viewModel { SettingsViewModel(get()) }
     }
 }

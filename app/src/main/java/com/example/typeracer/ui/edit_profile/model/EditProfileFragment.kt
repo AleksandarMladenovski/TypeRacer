@@ -6,9 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.typeracer.R
 import com.example.typeracer.databinding.FragmentEditProfileBinding
 import com.example.typeracer.ui.edit_profile.viewmodel.EditProfileViewModel
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.fragment_register.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -26,8 +29,25 @@ class EditProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val user = editProfileViewModel.getCurrentUser()
         getCurrentUser()
+        populateProfileAdapter()
+    }
+
+    private fun populateProfileAdapter() {
+        val storage = Firebase.storage
+        val list=storage.reference.child("images/profile").listAll().addOnCompleteListener{
+            for(image in it.result.items){
+                image.downloadUrl.addOnCompleteListener{ imageUri ->
+                    Glide
+                        .with(requireContext())
+                        .load(imageUri.result)
+                        .centerCrop()
+                        .into(binding.userPhotoImage)
+                }
+            }
+        }
+
+
     }
 
     private fun getCurrentUser() {

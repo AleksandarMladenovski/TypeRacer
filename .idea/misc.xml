@@ -9,13 +9,14 @@
         <entry key="..\:/personal-new/app/src/main/res/layout/activity_splash.xml" value="0.2125" />
         <entry key="..\:/personal-new/app/src/main/res/layout/fragment_custom_lobby.xml" value="0.1671875" />
         <entry key="..\:/personal-new/app/src/main/res/layout/fragment_edit_profile.xml" value="0.18125" />
-        <entry key="..\:/personal-new/app/src/main/res/layout/fragment_game.xml" value="0.12604166666666666" />
+        <entry key="..\:/personal-new/app/src/main/res/layout/fragment_game.xml" value="0.264" />
         <entry key="..\:/personal-new/app/src/main/res/layout/fragment_home.xml" value="0.18333333333333332" />
         <entry key="..\:/personal-new/app/src/main/res/layout/fragment_login.xml" value="0.1933916423712342" />
         <entry key="..\:/personal-new/app/src/main/res/layout/fragment_register.xml" value="0.2125" />
         <entry key="..\:/personal-new/app/src/main/res/layout/fragment_reset_password.xml" value="0.2125" />
         <entry key="..\:/personal-new/app/src/main/res/layout/fragment_settings.xml" value="0.176" />
         <entry key="..\:/personal-new/app/src/main/res/layout/fragment_splash_game.xml" value="0.12604166666666666" />
+        <entry key="..\:/personal-new/app/src/main/res/layout/item_game_player.xml" value="0.25416666666666665" />
       </map>
     </option>
   </component>

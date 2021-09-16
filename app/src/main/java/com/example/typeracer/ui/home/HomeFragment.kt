@@ -12,6 +12,8 @@ import com.example.typeracer.R
 import com.example.typeracer.databinding.FragmentHomeBinding
 import org.koin.android.viewmodel.ext.android.viewModel
 import android.graphics.drawable.Drawable
+import com.example.typeracer.ui.activity.GameActivity
+import com.example.typeracer.ui.activity.MainActivity
 import com.google.common.reflect.Reflection.getPackageName
 
 
@@ -58,10 +60,9 @@ class HomeFragment : Fragment() {
         }
     }
 
-
     private fun listenForRandomLobby() {
         binding.buttonRandomLobby.setOnClickListener {
-            //TODO START GAME
+            (activity as MainActivity).startGameActivity()
         }
     }
 

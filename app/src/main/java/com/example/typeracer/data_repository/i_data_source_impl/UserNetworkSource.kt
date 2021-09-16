@@ -1,31 +1,28 @@
 package com.example.typeracer.data_repository.i_data_source_impl
 
 import android.app.Activity
-import com.example.typeracer.data_repository.Firebase
+import com.example.typeracer.data_repository.FirebaseNetwork
 import com.example.typeracer.data_repository.callback.BooleanCallback
 import com.example.typeracer.data_repository.callback.UserCallback
 import com.example.typeracer.data_repository.i_data_source.UserDataSource
 import com.example.typeracer.utils.addons.toUser
-import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.OAuthProvider
-import androidx.annotation.NonNull
-import org.koin.ext.scope
 
 
 class UserNetworkSource : UserDataSource {
     override fun loginWithProvider(providerName: String, activity: Activity, callback: UserCallback) {
         val provider = OAuthProvider.newBuilder(providerName)
         provider.addCustomParameter("prompt", "login")
-        val firebaseAuth = Firebase.getFirebaseAuth()
+        val firebaseAuth = FirebaseNetwork.getFirebaseAuth()
         val pendingResultTask: Task<AuthResult>? = firebaseAuth.pendingAuthResult
         if (pendingResultTask != null) {
             // There's something already here! Finish the sign-in for your user.
             pendingResultTask.addOnSuccessListener(
                 OnSuccessListener {
-                    val firebaseUser = Firebase.getFirebaseAuth().currentUser
+                    val firebaseUser = FirebaseNetwork.getFirebaseAuth().currentUser
                     if (firebaseUser != null) {
                         callback.onSuccess(firebaseUser.toUser())
                     } else {
@@ -39,7 +36,7 @@ class UserNetworkSource : UserDataSource {
             firebaseAuth
                 .startActivityForSignInWithProvider( activity, provider.build())
                 .addOnSuccessListener {
-                    val firebaseUser = Firebase.getFirebaseAuth().currentUser
+                    val firebaseUser = FirebaseNetwork.getFirebaseAuth().currentUser
                     if (firebaseUser != null) {
                         callback.onSuccess(firebaseUser.toUser())
                     } else {
@@ -58,10 +55,10 @@ class UserNetworkSource : UserDataSource {
         password: String,
         callback: UserCallback
     ) {
-        Firebase.getFirebaseAuth().createUserWithEmailAndPassword(email, password)
+        FirebaseNetwork.getFirebaseAuth().createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    val firebaseUser = Firebase.getFirebaseAuth().currentUser
+                    val firebaseUser = FirebaseNetwork.getFirebaseAuth().currentUser
                     if (firebaseUser != null) {
                         callback.onSuccess(firebaseUser.toUser())
                     } else {
@@ -74,10 +71,10 @@ class UserNetworkSource : UserDataSource {
     }
 
     override fun loginByBasic(email: String, password: String, callback: UserCallback) {
-        Firebase.getFirebaseAuth().signInWithEmailAndPassword(email, password)
+        FirebaseNetwork.getFirebaseAuth().signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    val firebaseUser = Firebase.getFirebaseAuth().currentUser
+                    val firebaseUser = FirebaseNetwork.getFirebaseAuth().currentUser
                     if (firebaseUser != null) {
                         callback.onSuccess(firebaseUser.toUser())
                     } else {
@@ -90,7 +87,7 @@ class UserNetworkSource : UserDataSource {
     }
 
     override fun resetUserPassword(email: String, callback: BooleanCallback) {
-        Firebase.getFirebaseAuth().sendPasswordResetEmail(email)
+        FirebaseNetwork.getFirebaseAuth().sendPasswordResetEmail(email)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     callback.onSuccess(true)
@@ -101,7 +98,7 @@ class UserNetworkSource : UserDataSource {
     }
 
     override fun logOutUser() {
-        Firebase.getFirebaseAuth().signOut()
+        FirebaseNetwork.getFirebaseAuth().signOut()
     }
 
 
