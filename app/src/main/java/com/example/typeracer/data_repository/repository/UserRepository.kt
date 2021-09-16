@@ -95,5 +95,7 @@ class UserRepository {
         return observable
     }
 
+    fun isUserLoggedIn():Boolean = FirebaseNetwork.getFirebaseAuth().currentUser!=null
+
     fun logOutUser() = userNetworkSource.logOutUser()
 }

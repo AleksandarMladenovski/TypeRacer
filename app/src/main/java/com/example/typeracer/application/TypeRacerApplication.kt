@@ -1,9 +1,11 @@
 package com.example.typeracer.application
 
 import android.app.Application
+import com.example.typeracer.data_repository.repository.StorageRepository
 import com.example.typeracer.data_repository.repository.UserRepository
 import com.example.typeracer.data_repository.viewmodel.UserViewModel
 import com.example.typeracer.persistance.PreferencesTypeRacer
+import com.example.typeracer.ui.activity.SplashViewModel
 import com.example.typeracer.ui.custom_lobby.model.CustomLobbyFragment
 import com.example.typeracer.ui.custom_lobby.viemodel.CustomLobbyViewModel
 import com.example.typeracer.ui.edit_profile.model.EditProfileFragment
@@ -52,11 +54,13 @@ class TypeRacerApplication : Application() {
         single { GameFragment() }
 
         single { UserRepository() }
+        single { StorageRepository() }
         viewModel { CustomLobbyViewModel() }
         viewModel { EditProfileViewModel(get()) }
         viewModel { UserViewModel(get()) }
         viewModel { HomeViewModel(get()) }
-        
+        viewModel { SplashViewModel(get(),get()) }
+
         viewModel { SettingsViewModel(get()) }
     }
 }
