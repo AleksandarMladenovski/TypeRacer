@@ -3,9 +3,9 @@ package com.example.typeracer.utils.addons
 import com.example.typeracer.data_repository.model.User
 import com.google.firebase.auth.FirebaseUser
 
-fun FirebaseUser.toUser() = User(
+fun FirebaseUser.toUser(name: String?) = User(
     this.uid,
-    this.displayName ?: "Player",
+    name ?: "Player",
     this.email ?: "player.email@example.com",
     "default1",
     "default1",

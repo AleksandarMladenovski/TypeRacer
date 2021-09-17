@@ -74,7 +74,16 @@ class UserRepository {
 
     fun getUser(): MutableLiveData<User> {
         if (currentUser.value == null) {
-            currentUser.value = FirebaseNetwork.getFirebaseAuth().currentUser?.toUser()
+            userNetworkSource.getCurrentUser(object : UserCallback{
+                override fun onSuccess(user: User) {
+                    currentUser.postValue(user)
+                }
+
+                override fun onFailure(error: String) {
+
+                }
+
+            })
         }
         return currentUser
     }
@@ -82,6 +91,22 @@ class UserRepository {
     fun resetUserPassword(email: String): MutableLiveData<ResponseData<Boolean>> {
         val observable: MutableLiveData<ResponseData<Boolean>> by lazy { MutableLiveData<ResponseData<Boolean>>() }
         userNetworkSource.resetUserPassword(email, object : BooleanCallback {
+
+            override fun onSuccess(value: Boolean) {
+                observable.postValue(ResponseData(true, "error", "", ResponseStatus.Success))
+            }
+
+            override fun onFailure(error: String) {
+                observable.postValue(ResponseData(false, error, "", ResponseStatus.Failure))
+            }
+
+        })
+        return observable
+    }
+
+    fun updateUserName(id: String, user: User.FirebaseDatabaseUser): MutableLiveData<ResponseData<Boolean>> {
+        val observable: MutableLiveData<ResponseData<Boolean>> by lazy { MutableLiveData<ResponseData<Boolean>>() }
+        userNetworkSource.updateUserData(id, user , object : BooleanCallback {
 
             override fun onSuccess(value: Boolean) {
                 observable.postValue(ResponseData(true, "error", "", ResponseStatus.Success))

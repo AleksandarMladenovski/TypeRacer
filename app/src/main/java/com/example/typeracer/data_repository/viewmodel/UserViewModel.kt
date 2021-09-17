@@ -2,6 +2,7 @@ package com.example.typeracer.data_repository.viewmodel
 
 import android.app.Activity
 import androidx.lifecycle.ViewModel
+import com.example.typeracer.data_repository.model.User
 import com.example.typeracer.data_repository.repository.UserRepository
 
 class UserViewModel(private val repository: UserRepository) : ViewModel() {
@@ -20,5 +21,7 @@ class UserViewModel(private val repository: UserRepository) : ViewModel() {
     fun resetUserPassword(email: String) = repository.resetUserPassword(email)
 
     fun logOutUser() = repository.logOutUser()
+
+    fun updateUserName(id: String, user: User.FirebaseDatabaseUser) = repository.updateUserName(id,user)
 
 }
