@@ -56,7 +56,7 @@ class TypeRacerApplication : Application() {
         single { UserRepository() }
         single { StorageRepository() }
         viewModel { CustomLobbyViewModel() }
-        viewModel { EditProfileViewModel(get()) }
+        viewModel { EditProfileViewModel(get(),get()) }
         viewModel { UserViewModel(get()) }
         viewModel { HomeViewModel(get()) }
         viewModel { SplashViewModel(get(),get()) }
