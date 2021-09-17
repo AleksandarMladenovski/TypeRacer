@@ -1,6 +1,5 @@
 package com.example.typeracer.ui.home
 
-import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,12 +8,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.example.typeracer.R
+import com.example.typeracer.data_repository.FirebaseNetwork
 import com.example.typeracer.databinding.FragmentHomeBinding
-import org.koin.android.viewmodel.ext.android.viewModel
-import android.graphics.drawable.Drawable
-import com.example.typeracer.ui.activity.GameActivity
 import com.example.typeracer.ui.activity.MainActivity
-import com.google.common.reflect.Reflection.getPackageName
+import org.koin.android.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 
 class HomeFragment : Fragment() {
@@ -39,10 +37,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun getCurrentUser() {
-        homeViewModel.getCurrentUser().observe(viewLifecycleOwner,{ user->
-            val photoId = resources.getIdentifier(user.photoName, "drawable", requireContext().packageName)
+        homeViewModel.getCurrentUser().observe(viewLifecycleOwner, { user ->
+            val photoId =
+                resources.getIdentifier(user.photoName, "drawable", requireContext().packageName)
             binding.photoImageButton.setImageResource(photoId)
-            val carId = resources.getIdentifier(user.carName, "drawable", requireContext().packageName)
+            val carId =
+                resources.getIdentifier(user.carName, "drawable", requireContext().packageName)
             binding.carImageButton.setImageResource(carId)
         })
     }
@@ -62,8 +62,15 @@ class HomeFragment : Fragment() {
 
     private fun listenForRandomLobby() {
         binding.buttonRandomLobby.setOnClickListener {
-            (activity as MainActivity).startGameActivity()
+            FirebaseNetwork.getFirebaseFunctions().getHttpsCallable("addToQueue").call()
+                .continueWith{task ->
+                    Timber.d(task.result?.data as String)
+                }
         }
     }
 
+    fun startGameActivity() {
+        (activity as MainActivity).startGameActivity()
+
+    }
 }
