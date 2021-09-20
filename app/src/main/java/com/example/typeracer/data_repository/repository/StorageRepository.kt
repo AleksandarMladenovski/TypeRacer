@@ -8,7 +8,7 @@ import com.example.typeracer.data_repository.response.ResponseData
 import com.example.typeracer.data_repository.response.ResponseStatus
 
 class StorageRepository {
-    private var images: TypeRacerImages? = null
+    var images: TypeRacerImages? = null
     private val storageNetworkSource = StorageNetworkSource()
 
     fun getAllImages(): MutableLiveData<ResponseData<TypeRacerImages?>> {
