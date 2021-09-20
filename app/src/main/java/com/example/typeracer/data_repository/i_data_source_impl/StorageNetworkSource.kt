@@ -4,10 +4,11 @@ import android.net.Uri
 import com.example.typeracer.data_repository.FirebaseNetwork
 import com.example.typeracer.data_repository.callback.DefaultCallback
 import com.example.typeracer.data_repository.i_data_source.StorageDataSource
+import com.example.typeracer.data_repository.model.TypeRacerImages
 
 class StorageNetworkSource : StorageDataSource {
-    override fun getAllProfileImages(callback: DefaultCallback<MutableList<Uri>>) {
-        val list = mutableListOf<Uri>()
+    private fun getAllProfileImages(callback: DefaultCallback<TypeRacerImages>) {
+        val profiles = mutableListOf<Uri>()
         FirebaseNetwork.getFirebaseStorage().reference.child("images/profile").listAll()
             .addOnCompleteListener {
                 if (it.isSuccessful) {
@@ -15,10 +16,10 @@ class StorageNetworkSource : StorageDataSource {
                     for (image in it.result.items) {
                         image.downloadUrl.addOnCompleteListener { imageUri ->
                             if (imageUri.isSuccessful) {
-                                list.add(imageUri.result)
+                                profiles.add(imageUri.result)
                                 counter++
                                 if (counter == it.result.items.size) {
-                                    callback.onSuccess(list)
+                                    getAllCarImages(profiles, callback)
                                 }
                             } else {
                                 callback.onFailure("Something went wrong!")
@@ -31,8 +32,11 @@ class StorageNetworkSource : StorageDataSource {
             }
     }
 
-    override fun getAllCarImages(callback: DefaultCallback<MutableList<Uri>>) {
-        val list = mutableListOf<Uri>()
+    private fun getAllCarImages(
+        profiles: MutableList<Uri>,
+        callback: DefaultCallback<TypeRacerImages>
+    ) {
+        val cars = mutableListOf<Uri>()
         FirebaseNetwork.getFirebaseStorage().reference.child("images/car").listAll()
             .addOnCompleteListener {
                 if (it.isSuccessful) {
@@ -40,10 +44,10 @@ class StorageNetworkSource : StorageDataSource {
                     for (image in it.result.items) {
                         image.downloadUrl.addOnCompleteListener { imageUri ->
                             if (imageUri.isSuccessful) {
-                                list.add(imageUri.result)
+                                cars.add(imageUri.result)
                                 counter++
                                 if (counter == it.result.items.size) {
-                                    callback.onSuccess(list)
+                                    callback.onSuccess(TypeRacerImages(cars, profiles))
                                 }
                             } else {
                                 callback.onFailure("Something went wrong!")
@@ -54,5 +58,9 @@ class StorageNetworkSource : StorageDataSource {
                     callback.onFailure("Something went wrong!")
                 }
             }
+    }
+
+    override fun getAllImages(callback: DefaultCallback<TypeRacerImages>) {
+        getAllProfileImages(callback)
     }
 }

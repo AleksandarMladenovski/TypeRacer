@@ -1,15 +1,20 @@
 package com.example.typeracer.application
 
 import android.app.Application
+import com.example.typeracer.data_repository.repository.GameRepository
+import com.example.typeracer.data_repository.repository.StorageRepository
 import com.example.typeracer.data_repository.repository.UserRepository
 import com.example.typeracer.data_repository.viewmodel.UserViewModel
 import com.example.typeracer.persistance.PreferencesTypeRacer
+import com.example.typeracer.ui.activity.SplashViewModel
 import com.example.typeracer.ui.custom_lobby.model.CustomLobbyFragment
 import com.example.typeracer.ui.custom_lobby.viemodel.CustomLobbyViewModel
 import com.example.typeracer.ui.edit_profile.model.EditProfileFragment
 import com.example.typeracer.ui.edit_profile.viewmodel.EditProfileViewModel
 import com.example.typeracer.ui.game.model.GameFragment
 import com.example.typeracer.ui.game.model.SplashGameFragment
+import com.example.typeracer.ui.game.viewmodel.GameViewModel
+import com.example.typeracer.ui.game.viewmodel.SplashGameViewModel
 import com.example.typeracer.ui.home.HomeFragment
 import com.example.typeracer.ui.home.HomeViewModel
 import com.example.typeracer.ui.login.LoginFragment
@@ -52,11 +57,15 @@ class TypeRacerApplication : Application() {
         single { GameFragment() }
 
         single { UserRepository() }
+        single { StorageRepository() }
+        single { GameRepository() }
         viewModel { CustomLobbyViewModel() }
-        viewModel { EditProfileViewModel(get()) }
-        viewModel { UserViewModel(get()) }
-        viewModel { HomeViewModel(get()) }
-        
+        viewModel { EditProfileViewModel(get(),get()) }
+        viewModel { UserViewModel(get(), get()) }
+        viewModel { HomeViewModel(get(), get()) }
+        viewModel { SplashViewModel(get(), get()) }
+        viewModel { SplashGameViewModel(get()) }
+        viewModel { GameViewModel(get()) }
         viewModel { SettingsViewModel(get()) }
     }
 }

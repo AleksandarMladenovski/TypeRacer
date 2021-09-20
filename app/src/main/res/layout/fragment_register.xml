@@ -11,14 +11,14 @@
 
         <ImageView
             android:id="@+id/user_login_image"
-            android:layout_width="@dimen/logo_w_h"
-            android:layout_height="@dimen/logo_w_h"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:layout_gravity="center"
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="40dp"
             android:layout_marginTop="40dp"
             android:contentDescription="@string/logo_type_racer"
             android:scaleType="fitXY"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/logo" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/name_layout"
@@ -26,6 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            app:boxBackgroundColor="@color/white"
             android:hint="@string/name">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -34,6 +35,7 @@
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
                 android:maxLength="30"
+                android:layout_marginHorizontal="20dp"
                 android:singleLine="true"
                 android:textSize="20sp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -44,6 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            app:boxBackgroundColor="@color/white"
             android:hint="@string/email">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -52,6 +55,7 @@
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
                 android:maxLength="30"
+                android:layout_marginHorizontal="20dp"
                 android:singleLine="true"
                 android:textSize="20sp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -64,6 +68,7 @@
             android:layout_marginTop="16dp"
             android:hint="@string/password"
             app:passwordToggleEnabled="true"
+            app:boxBackgroundColor="@color/white"
             android:inputType="textPassword">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -73,6 +78,7 @@
                 android:imeOptions="actionDone"
                 android:maxLength="30"
                 android:singleLine="true"
+                android:layout_marginHorizontal="20dp"
                 android:inputType="textPassword"
                 android:textSize="20sp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -84,9 +90,9 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="20dp"
-            android:background="@drawable/btn_custom"
-            android:text="@string/register"
-            android:textColor="@android:color/white" />
+            android:backgroundTint="@color/color_red"
+            android:textColor="@android:color/white"
+            android:text="@string/register" />
 
 
         <RelativeLayout
@@ -126,6 +132,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
                     android:text="Click to Login"
+                    android:textColor="@color/color_red"
                     android:textSize="15sp" />
             </LinearLayout>
 

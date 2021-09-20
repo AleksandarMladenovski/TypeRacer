@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="image"
+            type="com.example.typeracer.data_repository.model.TypeRacerImages" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/item_profile_image_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:background="@color/black"
+        android:layout_margin="5dp">
+
+        <ImageView
+            android:id="@+id/item_profile_image"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/default1"
+            android:background="@color/white"
+            android:padding="3dp"/>
+
+    </LinearLayout>
+
+
+
+</layout>

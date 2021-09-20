@@ -9,7 +9,10 @@
         android:name="com.example.typeracer.ui.game.model.SplashGameFragment">
         <action
             android:id="@+id/action_splash_game_fragment_to_game_fragment"
-            app:destination="@id/gameFragment" />
+            app:destination="@id/gameFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/game_navigation"
+            app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment

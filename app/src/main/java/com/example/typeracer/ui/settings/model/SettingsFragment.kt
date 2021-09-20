@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import com.bumptech.glide.Glide
 import com.example.typeracer.R
 import com.example.typeracer.databinding.FragmentSettingsBinding
 import com.example.typeracer.ui.activity.LoginActivity
@@ -33,6 +34,7 @@ class SettingsFragment : Fragment() {
         listenForLogOutClick()
         listenForEditProfile()
         getCurrentUser()
+        onBackClick()
     }
 
     private fun listenForEditProfile() {
@@ -52,12 +54,25 @@ class SettingsFragment : Fragment() {
 
     private fun getCurrentUser() {
         settingsViewModel.getCurrentUser().observe(viewLifecycleOwner,{ user->
-            val photoId = resources.getIdentifier(user.photoName, "drawable", requireContext().packageName)
-            binding.userPhotoImage.setImageResource(photoId)
-            val carId = resources.getIdentifier(user.carName, "drawable", requireContext().packageName)
-            binding.userCarImage.setImageResource(carId)
+            Glide
+                .with(requireActivity())
+                .load(user.photoName)
+                .centerCrop()
+                .into(binding.userPhotoImage)
+            Glide
+                .with(requireActivity())
+                .load(user.carName)
+                .centerCrop()
+                .into(binding.userCarImage)
             binding.userName.text = user!!.name
+            binding.userEmail.text = user.email
         })
+    }
+
+    private fun onBackClick() {
+        binding.actionBarIconBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
     }
 
 

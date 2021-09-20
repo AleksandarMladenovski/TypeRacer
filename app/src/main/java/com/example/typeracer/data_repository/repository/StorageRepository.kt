@@ -1,28 +1,42 @@
 package com.example.typeracer.data_repository.repository
 
-import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import com.example.typeracer.data_repository.callback.DefaultCallback
 import com.example.typeracer.data_repository.i_data_source_impl.StorageNetworkSource
+import com.example.typeracer.data_repository.model.TypeRacerImages
+import com.example.typeracer.data_repository.response.ResponseData
+import com.example.typeracer.data_repository.response.ResponseStatus
 
 class StorageRepository {
-    val profiles: MutableLiveData<MutableList<Uri>> by lazy { MutableLiveData<MutableList<Uri>>() }
-    val cars: MutableLiveData<MutableList<Uri>> by lazy { MutableLiveData<MutableList<Uri>>() }
+    var images: TypeRacerImages? = null
     private val storageNetworkSource = StorageNetworkSource()
 
-    fun getAllProfileImages(): MutableLiveData<MutableList<Uri>> {
-        if (profiles.value == null) {
-            storageNetworkSource.getAllProfileImages(object : DefaultCallback<MutableList<Uri>> {
-                override fun onSuccess(data: MutableList<Uri>) {
-                    profiles.postValue(data)
+    fun getAllImages(): MutableLiveData<ResponseData<TypeRacerImages?>> {
+        val observable: MutableLiveData<ResponseData<TypeRacerImages?>> by lazy { MutableLiveData<ResponseData<TypeRacerImages?>>() }
+        if (images == null) {
+            storageNetworkSource.getAllImages(object : DefaultCallback<TypeRacerImages> {
+
+                override fun onSuccess(data: TypeRacerImages) {
+                    images = data
+                    observable.postValue(ResponseData(data, "", "", ResponseStatus.Success))
                 }
 
-                val list = mutableListOf<String>()
                 override fun onFailure(error: String) {
+                    observable.postValue(ResponseData(null, error, "", ResponseStatus.Failure))
                 }
 
             })
         }
-        return profiles
+        return observable
     }
+
+    fun getBasicImages(): Pair<String, String> {
+        return Pair(
+            images!!.profiles[0].toString(), images!!.cars[0].toString()
+        )
+
+    }
+//    fun getImageByName(): Uri {
+//
+//    }
 }

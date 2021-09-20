@@ -1,9 +1,8 @@
 package com.example.typeracer.data_repository.i_data_source
 
-import android.net.Uri
 import com.example.typeracer.data_repository.callback.DefaultCallback
+import com.example.typeracer.data_repository.model.TypeRacerImages
 
 interface StorageDataSource {
-    fun getAllProfileImages(callback : DefaultCallback<MutableList<Uri>>)
-    fun getAllCarImages(callback : DefaultCallback<MutableList<Uri>>)
+    fun getAllImages(callback: DefaultCallback<TypeRacerImages>)
 }

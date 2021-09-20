@@ -24,14 +24,14 @@
 
         <ImageView
             android:id="@+id/user_login_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:layout_above="@id/email_layout"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="50dp"
             android:contentDescription="@string/logo_type_racer"
             android:scaleType="fitXY"
-            android:src="@drawable/typeracer_logo" />
+            android:src="@drawable/logo" />
 
         <TextView
             android:id="@+id/login_incorrect_msg"
@@ -52,6 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@id/password_layout"
             android:layout_marginTop="20dp"
+            app:boxBackgroundColor="@color/white"
             android:hint="@string/email">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -59,9 +60,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
-                android:maxLength="30"
+                android:maxLength="50"
                 android:singleLine="true"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:layout_marginHorizontal="20dp"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -72,6 +74,7 @@
             android:layout_marginTop="16dp"
             android:layout_centerInParent="true"
             android:hint="@string/password"
+            app:boxBackgroundColor="@color/white"
             app:passwordToggleEnabled="true"
             android:inputType="textPassword">
 
@@ -82,6 +85,7 @@
                 android:imeOptions="actionDone"
                 android:maxLength="30"
                 android:singleLine="true"
+                android:layout_marginHorizontal="20dp"
                 android:inputType="textPassword"
                 android:textSize="20sp" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -91,13 +95,14 @@
             android:id="@+id/btn_reset_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:layout_below="@id/password_layout"
+            android:layout_alignParentEnd="true"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:background="@null"
             android:text="@string/btn_forgot_password"
-            android:textColor="@color/colorAccent"
+            android:backgroundTint="@color/color_red"
+            android:textColor="@android:color/white"
             android:textSize="12sp" />
 
         <Button
@@ -108,17 +113,19 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="5dp"
             android:layout_marginRight="20dp"
-            android:background="@drawable/btn_custom"
+            android:backgroundTint="@color/color_red"
             android:text="@string/sign_in"
             android:textColor="@android:color/white" />
+
         <TextView
             android:id="@+id/log_in_other_options_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="or you can sign in with"
-            android:layout_centerHorizontal="true"
             android:layout_below="@id/login_button"
-            android:layout_marginTop="20dp"/>
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/white"
+            android:text="or you can sign in with" />
         <LinearLayout
             android:id="@+id/l_layout_other_sign_in_options"
             android:layout_width="match_parent"
@@ -212,7 +219,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 android:text="Click to Register"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:textColor="@color/color_red"/>
         </LinearLayout>
 
 

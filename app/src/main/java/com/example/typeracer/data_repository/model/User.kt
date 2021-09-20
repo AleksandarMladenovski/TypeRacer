@@ -1,12 +1,21 @@
 package com.example.typeracer.data_repository.model
 
-import com.google.firebase.auth.FirebaseUser
-
 data class User(
-        var uid: String,
+    val uid: String,
+    var name: String,
+    val email: String,
+    var photoName: String,
+    var carName: String,
+    var emailVerified: Boolean = false
+) {
+    fun convertToFirebaseDatabaseUser(): FirebaseDatabaseUser {
+        return FirebaseDatabaseUser(name,photoName,carName,"")
+    }
+
+    data class FirebaseDatabaseUser(
         val name: String,
-        val email: String,
-        var photoName: String,
-        var carName: String,
-        val emailVerified: Boolean = false
-)
+        val photo: String,
+        val car: String,
+        val roomId: String
+    )
+}

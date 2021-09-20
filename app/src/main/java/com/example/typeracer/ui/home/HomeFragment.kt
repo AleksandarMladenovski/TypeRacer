@@ -1,20 +1,22 @@
 package com.example.typeracer.ui.home
 
-import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import com.bumptech.glide.Glide
 import com.example.typeracer.R
+import com.example.typeracer.data_repository.response.ResponseStatus
 import com.example.typeracer.databinding.FragmentHomeBinding
-import org.koin.android.viewmodel.ext.android.viewModel
-import android.graphics.drawable.Drawable
-import com.example.typeracer.ui.activity.GameActivity
 import com.example.typeracer.ui.activity.MainActivity
-import com.google.common.reflect.Reflection.getPackageName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.koin.android.viewmodel.ext.android.viewModel
 
 
 class HomeFragment : Fragment() {
@@ -34,16 +36,36 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         listenForRandomLobby()
         listenForCustomLobby()
+        listenForRemoveFromQueue()
         listenForSettings()
         getCurrentUser()
     }
 
+    private fun listenForRemoveFromQueue() {
+        binding.buttonRemoveFromQueue.setOnClickListener {
+            homeViewModel.removeFromQueue().observe(viewLifecycleOwner, { response ->
+                if (response.status == ResponseStatus.Success) {
+                    binding.queueLayout.visibility = View.GONE
+                } else {
+                    Toast.makeText(context, response.errorMessage, Toast.LENGTH_LONG).show()
+                }
+
+            })
+        }
+    }
+
     private fun getCurrentUser() {
-        homeViewModel.getCurrentUser().observe(viewLifecycleOwner,{ user->
-            val photoId = resources.getIdentifier(user.photoName, "drawable", requireContext().packageName)
-            binding.photoImageButton.setImageResource(photoId)
-            val carId = resources.getIdentifier(user.carName, "drawable", requireContext().packageName)
-            binding.carImageButton.setImageResource(carId)
+        homeViewModel.getCurrentUser().observe(viewLifecycleOwner, { user ->
+            Glide
+                .with(requireActivity())
+                .load(user.photoName)
+                .centerCrop()
+                .into(binding.carImageButton)
+            Glide
+                .with(requireActivity())
+                .load(user.carName)
+                .centerCrop()
+                .into(binding.photoImageButton)
         })
     }
 
@@ -62,8 +84,18 @@ class HomeFragment : Fragment() {
 
     private fun listenForRandomLobby() {
         binding.buttonRandomLobby.setOnClickListener {
-            (activity as MainActivity).startGameActivity()
+            binding.queueLayout.visibility = View.VISIBLE
+            homeViewModel.joinQueue().observe(viewLifecycleOwner, { response ->
+                if (response.status == ResponseStatus.Success) {
+                    startGameActivity()
+                } else {
+                    Toast.makeText(context, response.errorMessage, Toast.LENGTH_LONG).show()
+                }
+            })
         }
     }
 
+    private fun startGameActivity() {
+        (activity as MainActivity).startGameActivity()
+    }
 }

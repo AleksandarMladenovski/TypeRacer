@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.typeracer.data_repository.FirebaseNetwork
 import com.example.typeracer.data_repository.callback.BooleanCallback
 import com.example.typeracer.data_repository.callback.UserCallback
+import com.example.typeracer.data_repository.i_data_source_impl.QueueNetworkSource
 import com.example.typeracer.data_repository.i_data_source_impl.UserNetworkSource
 import com.example.typeracer.data_repository.model.User
 import com.example.typeracer.data_repository.response.ResponseData
@@ -16,10 +17,11 @@ class UserRepository {
     private val userNetworkSource = UserNetworkSource()
     fun loginWithProvider(
         provider: String,
+        images: Pair<String,String>,
         activity: Activity
     ): MutableLiveData<ResponseData<Boolean>> {
         val observable: MutableLiveData<ResponseData<Boolean>> by lazy { MutableLiveData<ResponseData<Boolean>>() }
-        userNetworkSource.loginWithProvider(provider, activity, object : UserCallback {
+        userNetworkSource.loginWithProvider(provider,images, activity, object : UserCallback {
             override fun onSuccess(user: User) {
                 currentUser.postValue(user)
                 observable.postValue(ResponseData(true, "error", "", ResponseStatus.Success))
@@ -36,10 +38,11 @@ class UserRepository {
     fun createUserByBasic(
         email: String,
         name: String,
-        password: String
+        password: String,
+        images: Pair<String,String>
     ): MutableLiveData<ResponseData<Boolean>> {
         val observable: MutableLiveData<ResponseData<Boolean>> by lazy { MutableLiveData<ResponseData<Boolean>>() }
-        userNetworkSource.createUserByBasic(email, name, password, object : UserCallback {
+        userNetworkSource.createUserByBasic(email, name, password, images ,object : UserCallback {
             override fun onSuccess(user: User) {
                 currentUser.postValue(user)
                 observable.postValue(ResponseData(true, "error", "", ResponseStatus.Success))
@@ -74,7 +77,16 @@ class UserRepository {
 
     fun getUser(): MutableLiveData<User> {
         if (currentUser.value == null) {
-            currentUser.value = FirebaseNetwork.getFirebaseAuth().currentUser?.toUser()
+            userNetworkSource.getCurrentUser(object : UserCallback{
+                override fun onSuccess(user: User) {
+                    currentUser.postValue(user)
+                }
+
+                override fun onFailure(error: String) {
+
+                }
+
+            })
         }
         return currentUser
     }
@@ -95,5 +107,24 @@ class UserRepository {
         return observable
     }
 
+    fun updateUserName(id: String, user: User.FirebaseDatabaseUser): MutableLiveData<ResponseData<Boolean>> {
+        val observable: MutableLiveData<ResponseData<Boolean>> by lazy { MutableLiveData<ResponseData<Boolean>>() }
+        userNetworkSource.updateUserData(id, user , object : BooleanCallback {
+
+            override fun onSuccess(value: Boolean) {
+                observable.postValue(ResponseData(true, "error", "", ResponseStatus.Success))
+            }
+
+            override fun onFailure(error: String) {
+                observable.postValue(ResponseData(false, error, "", ResponseStatus.Failure))
+            }
+
+        })
+        return observable
+    }
+
+    fun isUserLoggedIn():Boolean = FirebaseNetwork.getFirebaseAuth().currentUser!=null
+
     fun logOutUser() = userNetworkSource.logOutUser()
+
 }
