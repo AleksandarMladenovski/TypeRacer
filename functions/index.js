@@ -13,11 +13,25 @@ exports.addToQueue = functions.https.onCall((data, context) => {
 exports.removeFromQueue =
     functions.https.onCall((data, context) => {
       const uid = context.auth.uid;
-      return admin.database().ref("/queue/players").child(uid).remove()
-          .then(() => {
-            return {uid: uid};
-          });
+      return admin.database().ref("/queue").once("value", function(snap) {
+        let queueCount = snap.child("queueCount").val();
+        queueCount--;
+        admin.database().ref("queue").update({wordCount: queueCount});
+        admin.database().ref("/queue/players").child(uid).remove();
+      }).then(() => {
+        return {uid: uid};
+      });
     });
+
+exports.playerCountListener =
+    functions.database.ref("/queue/players/{pushId}/uid")
+        .onDelete(()=>{
+          admin.database().ref("/queue").once("value", function(snap) {
+            let queueCount = snap.child("queueCount").val();
+            queueCount--;
+            admin.database().ref("queue").update({wordCount: queueCount});
+          });
+        });
 
 exports.playerQueueListener =
     functions.database.ref("/queue/players/{pushId}/uid")

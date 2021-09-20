@@ -1,6 +1,5 @@
 package com.example.typeracer.data_repository.repository
 
-import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import com.example.typeracer.data_repository.callback.DefaultCallback
 import com.example.typeracer.data_repository.i_data_source_impl.StorageNetworkSource
@@ -18,6 +17,7 @@ class StorageRepository {
             storageNetworkSource.getAllImages(object : DefaultCallback<TypeRacerImages> {
 
                 override fun onSuccess(data: TypeRacerImages) {
+                    images = data
                     observable.postValue(ResponseData(data, "", "", ResponseStatus.Success))
                 }
 
@@ -30,6 +30,12 @@ class StorageRepository {
         return observable
     }
 
+    fun getBasicImages(): Pair<String, String> {
+        return Pair(
+            images!!.profiles[0].toString(), images!!.cars[0].toString()
+        )
+
+    }
 //    fun getImageByName(): Uri {
 //
 //    }

@@ -5,5 +5,5 @@ data class GamePlayer(
     val name: String,
     val photo: String,
     val car: String,
-    val wordCount: Int
+    var wordCount: Int
 )

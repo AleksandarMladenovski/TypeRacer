@@ -11,14 +11,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnLayout
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.typeracer.R
+import com.example.typeracer.data_repository.FirebaseNetwork
+import com.example.typeracer.data_repository.model.GamePlayer
+import com.example.typeracer.data_repository.response.ResponseStatus
 import com.example.typeracer.databinding.FragmentGameBinding
+import com.example.typeracer.ui.game.adapter.PlayerAdapter
+import com.example.typeracer.ui.game.viewmodel.GameViewModel
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class GameFragment : Fragment() {
     private lateinit var binding: FragmentGameBinding
     private val text = "yes i will go now in a minute of your time"
     private var textCounter = 0
     private var gameTextMoveSize: Float = 0f
+    private val gameViewModel: GameViewModel by viewModel()
+    private lateinit var playerAdapter: PlayerAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -30,11 +40,10 @@ class GameFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.itemPlayerTrack.doOnLayout {
-             gameTextMoveSize = binding.itemPlayerTrack.width.toFloat() / text.split(" ").size.toFloat()
-        }
+        initRecycler()
+        getAllPlayers()
 
-        binding.gameText.addTextChangedListener(object : TextWatcher{
+        binding.gameInputField.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }
@@ -53,12 +62,13 @@ class GameFragment : Fragment() {
                             }
                         }
                         if(wordCharEnd){
-                            binding.gameText.setText("")
+                            binding.gameInputField.setText("")
                             textCounter++
-                            ObjectAnimator.ofFloat(binding.itemPlayerCar, "translationX", gameTextMoveSize*textCounter).apply {
-                                duration = 1
-                                start()
+                            FirebaseNetwork.getFirebaseAuth().currentUser?.let {
+                                playerAdapter.updatePlayer(
+                                    it.uid,textCounter,1)
                             }
+//
                         }
                     }
 
@@ -71,6 +81,33 @@ class GameFragment : Fragment() {
 
         })
 
+    }
+
+    private fun initRecycler(){
+        playerAdapter = PlayerAdapter(mutableListOf(),requireContext(),text)
+        binding.recyclerViewGamePlayers.apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            if (0 == binding.recyclerViewGamePlayers.itemDecorationCount) {
+                addItemDecoration(
+                    DividerItemDecoration(
+                        requireContext(),
+                        DividerItemDecoration.VERTICAL
+                    )
+                )
+            }
+            adapter = playerAdapter
+        }
+    }
+
+    private fun getAllPlayers() {
+        gameViewModel.getAllPlayers().observe(viewLifecycleOwner,{ response ->
+            if(response.status == ResponseStatus.Success){
+                    playerAdapter.update(response.data as MutableList<GamePlayer>,1)
+            }else{
+
+            }
+        })
     }
 
 }

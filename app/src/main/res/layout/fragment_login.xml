@@ -91,8 +91,8 @@
             android:id="@+id/btn_reset_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:layout_below="@id/password_layout"
+            android:layout_alignParentEnd="true"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:background="@null"
@@ -111,14 +111,15 @@
             android:background="@drawable/btn_custom"
             android:text="@string/sign_in"
             android:textColor="@android:color/white" />
+
         <TextView
             android:id="@+id/log_in_other_options_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="or you can sign in with"
-            android:layout_centerHorizontal="true"
             android:layout_below="@id/login_button"
-            android:layout_marginTop="20dp"/>
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:text="or you can sign in with" />
         <LinearLayout
             android:id="@+id/l_layout_other_sign_in_options"
             android:layout_width="match_parent"

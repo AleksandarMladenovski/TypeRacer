@@ -5,35 +5,24 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <LinearLayout
+
+        <TextView
+            android:id="@+id/game_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toTopOf="parent">
-            <ImageView
-                android:id="@+id/item_player_car"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:layout_weight="0.13"
-                android:src="@drawable/default1"/>
-            <View
-                android:id="@+id/item_player_track"
-                android:layout_width="0dp"
-                android:layout_weight="0.7"
-                android:layout_height="3dp"
-                android:background="@color/black"
-                android:layout_gravity="bottom">
-            </View>
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:text="150\nWPM"
-                android:gravity="center"
-                android:textStyle="bold"
-                android:layout_weight="0.17"/>
-        </LinearLayout>
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="Some tasdasdasdext"
+            android:textColor="@color/black"
+            android:textSize="21sp" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_game_players"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/game_text"
+            android:clickable="false"
+            android:scrollbars="vertical"
+            tools:listitem="@layout/item_game_player" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/name_layout"
@@ -41,13 +30,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginTop="20dp"
-            android:hint="@string/name">
+            android:hint="@string/type_here">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/game_text"
+                android:id="@+id/game_input_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"

@@ -1,6 +1,7 @@
 package com.example.typeracer.application
 
 import android.app.Application
+import com.example.typeracer.data_repository.repository.GameRepository
 import com.example.typeracer.data_repository.repository.StorageRepository
 import com.example.typeracer.data_repository.repository.UserRepository
 import com.example.typeracer.data_repository.viewmodel.UserViewModel
@@ -12,6 +13,7 @@ import com.example.typeracer.ui.edit_profile.model.EditProfileFragment
 import com.example.typeracer.ui.edit_profile.viewmodel.EditProfileViewModel
 import com.example.typeracer.ui.game.model.GameFragment
 import com.example.typeracer.ui.game.model.SplashGameFragment
+import com.example.typeracer.ui.game.viewmodel.GameViewModel
 import com.example.typeracer.ui.home.HomeFragment
 import com.example.typeracer.ui.home.HomeViewModel
 import com.example.typeracer.ui.login.LoginFragment
@@ -55,12 +57,13 @@ class TypeRacerApplication : Application() {
 
         single { UserRepository() }
         single { StorageRepository() }
+        single { GameRepository() }
         viewModel { CustomLobbyViewModel() }
         viewModel { EditProfileViewModel(get()) }
-        viewModel { UserViewModel(get()) }
-        viewModel { HomeViewModel(get()) }
-        viewModel { SplashViewModel(get(),get()) }
-
+        viewModel { UserViewModel(get(), get()) }
+        viewModel { HomeViewModel(get(), get()) }
+        viewModel { SplashViewModel(get(), get()) }
+        viewModel { GameViewModel(get()) }
         viewModel { SettingsViewModel(get()) }
     }
 }

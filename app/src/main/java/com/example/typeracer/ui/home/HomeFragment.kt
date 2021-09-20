@@ -4,15 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.example.typeracer.R
-import com.example.typeracer.data_repository.FirebaseNetwork
+import com.example.typeracer.data_repository.response.ResponseStatus
 import com.example.typeracer.databinding.FragmentHomeBinding
 import com.example.typeracer.ui.activity.MainActivity
 import org.koin.android.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 
 class HomeFragment : Fragment() {
@@ -32,8 +32,22 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         listenForRandomLobby()
         listenForCustomLobby()
+        listenForRemoveFromQueue()
         listenForSettings()
         getCurrentUser()
+    }
+
+    private fun listenForRemoveFromQueue() {
+        binding.buttonRemoveFromQueue.setOnClickListener {
+            homeViewModel.removeFromQueue().observe(viewLifecycleOwner, { response ->
+                if (response.status == ResponseStatus.Success) {
+                    binding.queueLayout.visibility = View.GONE
+                } else {
+                    Toast.makeText(context, response.errorMessage, Toast.LENGTH_LONG).show()
+                }
+
+            })
+        }
     }
 
     private fun getCurrentUser() {
@@ -62,15 +76,18 @@ class HomeFragment : Fragment() {
 
     private fun listenForRandomLobby() {
         binding.buttonRandomLobby.setOnClickListener {
-            FirebaseNetwork.getFirebaseFunctions().getHttpsCallable("addToQueue").call()
-                .continueWith{task ->
-                    Timber.d(task.result?.data as String)
+            binding.queueLayout.visibility = View.VISIBLE
+            homeViewModel.joinQueue().observe(viewLifecycleOwner, { response ->
+                if (response.status == ResponseStatus.Success) {
+                    startGameActivity()
+                } else {
+                    Toast.makeText(context, response.errorMessage, Toast.LENGTH_LONG).show()
                 }
+            })
         }
     }
 
-    fun startGameActivity() {
+    private fun startGameActivity() {
         (activity as MainActivity).startGameActivity()
-
     }
 }
