@@ -40,7 +40,7 @@
                         android:textSize="21sp"
                         android:textColor="@android:color/black"/>
                     <Button
-                        android:id="@+id/textButton"
+                        android:id="@+id/saveButton"
                         android:layout_width="0dp"
                         android:layout_weight="0.3"
                         android:layout_height="wrap_content"

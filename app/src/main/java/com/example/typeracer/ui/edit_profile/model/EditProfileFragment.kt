@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.typeracer.R
 import com.example.typeracer.data_repository.model.TypeRacerImages
+import com.example.typeracer.data_repository.model.User
 import com.example.typeracer.data_repository.response.ResponseData
 import com.example.typeracer.databinding.FragmentEditProfileBinding
 import com.example.typeracer.ui.edit_profile.adapter.CarImageAdapter
@@ -25,12 +26,14 @@ import com.example.typeracer.utils.GlobalConstants.CHANGE_IMAGE_PROFILE
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.fragment_register.*
+import org.koin.android.ext.android.bind
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class EditProfileFragment : Fragment(), ChangeImageListener {
 
     private lateinit var binding: FragmentEditProfileBinding
-    private val editProfileViewModel: EditProfileViewModel by viewModel()
+    private val viewModel: EditProfileViewModel by viewModel()
+    private lateinit var user: User
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
@@ -42,11 +45,11 @@ class EditProfileFragment : Fragment(), ChangeImageListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getCurrentUser()
-        populateProfileAdapter(0)
-        populateCarAdapter(0)
+        onSaveClick()
+        onBackClick()
     }
 
-    private fun populateProfileAdapter(position: Int) {
+    private fun populateProfileAdapter(user: User) {
         binding.userPhotoRecyclerView.apply {
             layoutManager =
                     GridLayoutManager(
@@ -55,11 +58,11 @@ class EditProfileFragment : Fragment(), ChangeImageListener {
                             LinearLayoutManager.VERTICAL,
                             false
                     )
-            adapter = ProfileImageAdapter(requireContext(), editProfileViewModel.getProfileImages()!!.profiles, position, this@EditProfileFragment)
+            adapter = ProfileImageAdapter(requireContext(), viewModel.getProfileImages()!!.profiles, user, this@EditProfileFragment)
         }
     }
 
-    private fun populateCarAdapter(position: Int) {
+    private fun populateCarAdapter(user: User) {
         binding.userCarRecyclerView.apply {
             layoutManager =
                     GridLayoutManager(
@@ -68,28 +71,37 @@ class EditProfileFragment : Fragment(), ChangeImageListener {
                             LinearLayoutManager.VERTICAL,
                             false
                     )
-            adapter = CarImageAdapter(requireContext(), editProfileViewModel.getProfileImages()!!.cars, position, this@EditProfileFragment)
+            adapter = CarImageAdapter(requireContext(), viewModel.getProfileImages()!!.cars, user, this@EditProfileFragment)
         }
     }
 
 
     private fun getCurrentUser() {
-        editProfileViewModel.getCurrentUser().observe(viewLifecycleOwner, { user ->
-            val photoId = resources.getIdentifier(user.photoName, "drawable", requireContext().packageName)
-            binding.userPhotoImage.setImageResource(photoId)
-            val carId = resources.getIdentifier(user.carName, "drawable", requireContext().packageName)
-            binding.userCarImage.setImageResource(carId)
-            binding.editName.setText(user!!.name)
-//            changeImageGlide(user.photoName , binding.userPhotoImage)
-//            changeImageGlide(user.photoName , binding.userCarImage)
+        viewModel.getCurrentUser().observe(viewLifecycleOwner, { user ->
+            this.user = user
+            binding.editName.setText(user.name)
+            populateProfileAdapter(user)
+            populateCarAdapter(user)
+            Glide
+                .with(requireActivity())
+                .load(user.photoName)
+                .centerCrop()
+                .into(binding.userPhotoImage)
+            Glide
+                .with(requireActivity())
+                .load(user.carName)
+                .centerCrop()
+                .into(binding.userCarImage)
         })
     }
 
     override fun changeImage(type: String, uri: Uri) {
         if (type == CHANGE_IMAGE_PROFILE) {
             changeImageGlide(uri , binding.userPhotoImage)
+            user.photoName = uri.toString()
         } else {
             changeImageGlide(uri , binding.userCarImage)
+            user.carName = uri.toString()
         }
     }
 
@@ -99,5 +111,18 @@ class EditProfileFragment : Fragment(), ChangeImageListener {
                 .load(uri)
                 .centerCrop()
                 .into(imageView)
+    }
+
+    private fun onSaveClick() {
+        binding.saveButton.setOnClickListener {
+            user.name = binding.editName.text.toString()
+            viewModel.updateUser(user.uid,user.convertToFirebaseDatabaseUser())
+        }
+    }
+
+    private fun onBackClick() {
+        binding.actionBarIconBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
     }
 }

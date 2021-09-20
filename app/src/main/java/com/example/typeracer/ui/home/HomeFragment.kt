@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import com.bumptech.glide.Glide
 import com.example.typeracer.R
 import com.example.typeracer.data_repository.response.ResponseStatus
 import com.example.typeracer.databinding.FragmentHomeBinding
@@ -52,12 +53,16 @@ class HomeFragment : Fragment() {
 
     private fun getCurrentUser() {
         homeViewModel.getCurrentUser().observe(viewLifecycleOwner, { user ->
-            val photoId =
-                resources.getIdentifier(user.photoName, "drawable", requireContext().packageName)
-            binding.photoImageButton.setImageResource(photoId)
-            val carId =
-                resources.getIdentifier(user.carName, "drawable", requireContext().packageName)
-            binding.carImageButton.setImageResource(carId)
+            Glide
+                .with(requireActivity())
+                .load(user.photoName)
+                .centerCrop()
+                .into(binding.carImageButton)
+            Glide
+                .with(requireActivity())
+                .load(user.carName)
+                .centerCrop()
+                .into(binding.photoImageButton)
         })
     }
 

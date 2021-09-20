@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -26,9 +27,8 @@
             app:layout_constraintLeft_toRightOf="@id/carImageButton"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/start_layout"
-            android:foreground="@drawable/image_border"
             android:padding="1dp"
-            android:src="@drawable/default1" />
+            tools:src="@drawable/default1" />
 
         <ImageView
             android:id="@+id/carImageButton"
@@ -39,9 +39,8 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/photoImageButton"
             app:layout_constraintBottom_toTopOf="@+id/start_layout"
-            android:foreground="@drawable/image_border"
             android:padding="1dp"
-            android:src="@drawable/default1" />
+            tools:src="@drawable/default1" />
 
         <LinearLayout
             android:id="@+id/start_layout"
