@@ -35,9 +35,9 @@ class SplashGameFragment : Fragment() {
     }
 
     private fun getAllPlayers() {
-        splashGameViewModel.getAllPlayers().observe(viewLifecycleOwner,
-            { players ->
-                if(players.status == ResponseStatus.Success){
+        splashGameViewModel.prepareData().observe(viewLifecycleOwner,
+            { response ->
+                if(response.status == ResponseStatus.Success){
                     navigateToGameFragment(binding.root)
                 }
             })

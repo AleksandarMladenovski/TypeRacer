@@ -20,15 +20,19 @@ import com.example.typeracer.data_repository.response.ResponseStatus
 import com.example.typeracer.databinding.FragmentGameBinding
 import com.example.typeracer.ui.game.adapter.PlayerAdapter
 import com.example.typeracer.ui.game.viewmodel.GameViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class GameFragment : Fragment() {
     private lateinit var binding: FragmentGameBinding
-    private val text = "yes i will go now in a minute of your time"
+    private var text = "Type Text"
     private var textCounter = 0
-    private var gameTextMoveSize: Float = 0f
     private val gameViewModel: GameViewModel by viewModel()
     private lateinit var playerAdapter: PlayerAdapter
+    private var timeElapsed = 1
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -40,9 +44,8 @@ class GameFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRecycler()
-        getAllPlayers()
-
+        getGameText()
+        startTimer()
         binding.gameInputField.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
@@ -61,14 +64,14 @@ class GameFragment : Fragment() {
                                 return
                             }
                         }
-                        if(wordCharEnd){
+                        if(wordCharEnd && inputWord==currentWord){
                             binding.gameInputField.setText("")
                             textCounter++
                             FirebaseNetwork.getFirebaseAuth().currentUser?.let {
                                 playerAdapter.updatePlayer(
-                                    it.uid,textCounter,1)
+                                    it.uid,textCounter,timeElapsed)
+                                gameViewModel.uploadPlayerChanges(it.uid,textCounter)
                             }
-//
                         }
                     }
 
@@ -83,7 +86,17 @@ class GameFragment : Fragment() {
 
     }
 
-    private fun initRecycler(){
+    private fun getGameText() {
+        gameViewModel.getGameText().observe(viewLifecycleOwner,{ response ->
+            if(response.status == ResponseStatus.Success){
+                initRecycler(response.data)
+            }
+        })
+    }
+
+    private fun initRecycler(text : String){
+        this.text=text
+        binding.gameText.text=text
         playerAdapter = PlayerAdapter(mutableListOf(),requireContext(),text)
         binding.recyclerViewGamePlayers.apply {
             layoutManager =
@@ -97,13 +110,21 @@ class GameFragment : Fragment() {
                 )
             }
             adapter = playerAdapter
+            getAllPlayers()
         }
     }
-
+    private fun startTimer() {
+        CoroutineScope(Dispatchers.Main).launch {
+            while(true) {
+                delay(1000)
+                timeElapsed++
+            }
+        }
+    }
     private fun getAllPlayers() {
         gameViewModel.getAllPlayers().observe(viewLifecycleOwner,{ response ->
             if(response.status == ResponseStatus.Success){
-                    playerAdapter.update(response.data as MutableList<GamePlayer>,1)
+                    playerAdapter.update(response.data as MutableList<GamePlayer>,timeElapsed)
             }else{
 
             }

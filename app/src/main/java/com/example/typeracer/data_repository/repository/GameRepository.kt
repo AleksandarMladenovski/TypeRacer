@@ -14,6 +14,7 @@ class GameRepository {
 
     private val players: MutableLiveData<ResponseData<List<GamePlayer>>> by lazy { MutableLiveData<ResponseData<List<GamePlayer>>>() }
     private val gameId: MutableLiveData<ResponseData<String>> by lazy { MutableLiveData<ResponseData<String>>() }
+    private val sentence: MutableLiveData<ResponseData<String>> by lazy { MutableLiveData<ResponseData<String>>() }
     private val gameNetworkSource = GameNetworkSource()
     private val queueNetworkSource = QueueNetworkSource()
     private val userNetworkSource = UserNetworkSource()
@@ -58,30 +59,116 @@ class GameRepository {
     }
 
     fun getAllPlayers(): MutableLiveData<ResponseData<List<GamePlayer>>> {
-        if(players.value == null){
-            gameId.value?.let { gameNetworkSource.getAllPlayersId(it.data,object : DefaultCallback<List<String>>{
+            gameId.value?.let {
+                gameNetworkSource.getRealtimeGamePlayers(it.data, object : DefaultCallback<List<Pair<String,Int>>>{
+                    override fun onSuccess(data: List<Pair<String, Int>>) {
+                        for(value in data){
+                            players.value!!.data.find { it.id == value.first }!!.wordCount=value.second
+                        }
+                        players.postValue(players.value)
+                    }
+
+                    override fun onFailure(error: String) {
+                        TODO("Not yet implemented")
+                    }
+                })
+            }
+        return players
+
+    }
+
+    fun getTypeSentence(): MutableLiveData<ResponseData<String>> {
+        if (sentence.value == null) {
+            gameId.value?.let {
+                gameNetworkSource.getSentence(it.data, object : DefaultCallback<String> {
+                    override fun onSuccess(data: String) {
+                        sentence.postValue(ResponseData(data, "", "", ResponseStatus.Success))
+                    }
+
+                    override fun onFailure(error: String) {
+                        TODO("Not yet implemented")
+                    }
+
+                })
+            }
+        }
+        return sentence
+    }
+
+    fun prepareData(): MutableLiveData<ResponseData<Boolean>> {
+        val observable: MutableLiveData<ResponseData<Boolean>> by lazy { MutableLiveData<ResponseData<Boolean>>() }
+        gameId.value?.let {
+            gameNetworkSource.getAllPlayersId(it.data, object : DefaultCallback<List<String>> {
                 override fun onSuccess(data: List<String>) {
-                    for(id in data){
-                        userNetworkSource.getPlayersInfo(data,object: DefaultCallback<List<GamePlayer>>{
+                    userNetworkSource.getPlayersInfo(data,
+                        object : DefaultCallback<List<GamePlayer>> {
                             override fun onSuccess(data: List<GamePlayer>) {
-                                players.postValue(ResponseData(data,"","",ResponseStatus.Success))
+                                players.postValue(
+                                    ResponseData(
+                                        data,
+                                        "",
+                                        "",
+                                        ResponseStatus.Success
+                                    )
+                                )
+                                gameNetworkSource.getSentence(it.data,
+                                    object : DefaultCallback<String> {
+                                        override fun onSuccess(data: String) {
+                                            sentence.postValue(
+                                                ResponseData(
+                                                    data,
+                                                    "",
+                                                    "",
+                                                    ResponseStatus.Success
+                                                )
+                                            )
+                                            observable.postValue(
+                                                ResponseData(
+                                                    true,
+                                                    "",
+                                                    "",
+                                                    ResponseStatus.Success
+                                                )
+                                            )
+                                        }
+
+                                        override fun onFailure(error: String) {
+                                            observable.postValue(
+                                                ResponseData(
+                                                    false,
+                                                    error,
+                                                    "",
+                                                    ResponseStatus.Failure
+                                                )
+                                            )
+                                        }
+
+                                    })
                             }
 
                             override fun onFailure(error: String) {
-                                players.postValue(ResponseData(listOf(),error,"",ResponseStatus.Failure))
+                                players.postValue(
+                                    ResponseData(
+                                        listOf(),
+                                        error,
+                                        "",
+                                        ResponseStatus.Failure
+                                    )
+                                )
                             }
                         })
-                    }
                 }
 
                 override fun onFailure(error: String) {
                     TODO("Not yet implemented")
                 }
 
-            }) }
+            })
         }
-        return players
-
+        return observable
     }
 
+    fun uploadPlayerChanges(id: String, wordCount: Int) {
+        gameNetworkSource.uploadPlayerChanges(id, gameId.value!!.data, wordCount)
+    }
 }

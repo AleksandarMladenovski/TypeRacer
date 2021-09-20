@@ -12,7 +12,9 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             android:text="Some tasdasdasdext"
-            android:textColor="@color/black"
+            android:layout_marginHorizontal="10dp"
+            android:gravity="center"
+            android:textColor="@color/white"
             android:textSize="21sp" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -41,7 +43,8 @@
                 android:imeOptions="actionNext"
                 android:maxLength="30"
                 android:singleLine="true"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:background="@color/white"/>
         </com.google.android.material.textfield.TextInputLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -52,7 +52,7 @@ class PlayerAdapter(
         if(currentPlayer.wordCount == 0 ){
             holder.binding.itemPlayerWpm.text = "0\nWPM"
         }else{
-            holder.binding.itemPlayerWpm.text = "${(timeElapsed/currentPlayer.wordCount)*60}\nWPM"
+            holder.binding.itemPlayerWpm.text = "${(((currentPlayer.wordCount.toFloat())/timeElapsed.toFloat())*60).toInt()}\nWPM"
         }
 
     }

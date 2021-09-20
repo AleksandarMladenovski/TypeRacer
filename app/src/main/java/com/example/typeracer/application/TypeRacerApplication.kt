@@ -14,6 +14,7 @@ import com.example.typeracer.ui.edit_profile.viewmodel.EditProfileViewModel
 import com.example.typeracer.ui.game.model.GameFragment
 import com.example.typeracer.ui.game.model.SplashGameFragment
 import com.example.typeracer.ui.game.viewmodel.GameViewModel
+import com.example.typeracer.ui.game.viewmodel.SplashGameViewModel
 import com.example.typeracer.ui.home.HomeFragment
 import com.example.typeracer.ui.home.HomeViewModel
 import com.example.typeracer.ui.login.LoginFragment
@@ -63,6 +64,7 @@ class TypeRacerApplication : Application() {
         viewModel { UserViewModel(get(), get()) }
         viewModel { HomeViewModel(get(), get()) }
         viewModel { SplashViewModel(get(), get()) }
+        viewModel { SplashGameViewModel(get()) }
         viewModel { GameViewModel(get()) }
         viewModel { SettingsViewModel(get()) }
     }

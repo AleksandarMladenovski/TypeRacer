@@ -13,6 +13,9 @@ import com.example.typeracer.R
 import com.example.typeracer.data_repository.response.ResponseStatus
 import com.example.typeracer.databinding.FragmentHomeBinding
 import com.example.typeracer.ui.activity.MainActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 
 
