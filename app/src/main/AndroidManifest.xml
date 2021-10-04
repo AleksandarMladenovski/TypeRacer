@@ -15,20 +15,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".activity.TypeRaceActivity"/>
-        <activity android:name=".activity.LoginActivity"
-            >
-        </activity>
-        <activity android:name=".activity.MainActivity" />
-
-        <activity android:name=".activity.SplashActivity"
-            android:theme="@style/SplashTheme">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
 
         <meta-data android:name="com.facebook.sdk.ApplicationId"
             tools:replace="android:value"

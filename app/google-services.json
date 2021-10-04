@@ -1,34 +1,41 @@
 {
   "project_info": {
-    "project_number": "850690284059",
-    "firebase_url": "https://type-racer-light.firebaseio.com",
-    "project_id": "type-racer-light",
-    "storage_bucket": "type-racer-light.appspot.com"
+    "project_number": "1034314168009",
+    "project_id": "typeracer-adf54",
+    "storage_bucket": "typeracer-adf54.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:850690284059:android:57ced7f7cdcc08a65c36be",
+        "mobilesdk_app_id": "1:1034314168009:android:8cf6f8db24b83319aebf18",
         "android_client_info": {
-          "package_name": "com.extremedesign.typeracer"
+          "package_name": "com.example.typeracer"
         }
       },
       "oauth_client": [
         {
-          "client_id": "850690284059-8k9vmorftm8595r8gu3mu7t7060gkk0t.apps.googleusercontent.com",
+          "client_id": "1034314168009-ioq447n08hio7dac9k2808jg9srf5t2v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.typeracer",
+            "certificate_hash": "c3715ab1b5ec8487f7551261961df9b148ebbbdb"
+          }
+        },
+        {
+          "client_id": "1034314168009-1k4dqeekvr1s44pf8l08vf28qqm93md1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCYzkm9OWqc8-euinCRIwKE0LIe-39T3Jk"
+          "current_key": "AIzaSyDAdbHJKobK91LmRG9BJ_UkZ4UGRFrt4jI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "850690284059-8k9vmorftm8595r8gu3mu7t7060gkk0t.apps.googleusercontent.com",
+              "client_id": "1034314168009-1k4dqeekvr1s44pf8l08vf28qqm93md1.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

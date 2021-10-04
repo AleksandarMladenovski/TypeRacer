@@ -5,12 +5,9 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleObserver;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
 import com.extremedesign.typeracer.model.User;
-import com.extremedesign.typeracer.model.UserInfo;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -31,7 +28,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.lang.ref.WeakReference;
-import java.util.Objects;
 import java.util.concurrent.Executor;
 
 public class FirebaseRepo {

@@ -69,6 +69,7 @@ public class StartGameFragment extends Fragment {
                     if (charSequence.charAt(charSequence.length() - 1) == ' ') {
                                 correctWordCounter++;
                                 editText.setText("");
+
                     }
                 }
             }

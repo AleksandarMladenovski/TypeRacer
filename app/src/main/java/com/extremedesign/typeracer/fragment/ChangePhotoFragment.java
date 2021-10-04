@@ -16,13 +16,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.extremedesign.typeracer.DataRepository.RepositoryTypeRacer.RepositoryViewModel;
-import com.extremedesign.typeracer.FirebaseRepo;
+import com.extremedesign.typeracer.data_repository.repository_typeracer.RepositoryViewModel;
 import com.extremedesign.typeracer.R;
 import com.extremedesign.typeracer.adapter.ProfilePhotoChangeAdapter;
 import com.extremedesign.typeracer.fragment.UI.CustomActionBarFragment;
 import com.extremedesign.typeracer.listener.ChangeImageListener;
-import com.extremedesign.typeracer.listener.PlayerDisplayClose;
 import com.extremedesign.typeracer.listener.ProfilePictureListener;
 import com.extremedesign.typeracer.model.User;
 
@@ -66,7 +64,7 @@ public class ChangePhotoFragment extends Fragment {
             }
         });
         chosePhoto=itemView.findViewById(R.id.user_photo_chosen_image);
-        repositoryViewModel.getCurrentUser().observe(this, new Observer<User>() {
+        repositoryViewModel.getCurrentUser().observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
             public void onChanged(User user) {
                 int selected_id = getResources().getIdentifier(repositoryViewModel.getCurrentUser().getValue().getPhotoName(), "drawable", getContext().getPackageName());

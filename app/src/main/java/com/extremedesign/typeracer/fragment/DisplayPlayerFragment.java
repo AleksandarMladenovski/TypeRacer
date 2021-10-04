@@ -11,11 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.extremedesign.typeracer.fragment.UI.CustomActionBarFragment;
-import com.extremedesign.typeracer.model.User;
 import com.extremedesign.typeracer.R;
 import com.extremedesign.typeracer.listener.PlayerDisplayClose;
+import com.extremedesign.typeracer.model.User;
 
 /**
  * A simple {@link Fragment} subclass.

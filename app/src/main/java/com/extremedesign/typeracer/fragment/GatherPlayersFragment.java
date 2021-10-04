@@ -13,12 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.extremedesign.typeracer.FirebaseRepo;
 import com.extremedesign.typeracer.PlayerListAdapter;
 import com.extremedesign.typeracer.R;
-import com.extremedesign.typeracer.listener.PlayersReadyListener;
-import com.extremedesign.typeracer.model.FriendlyPlayer;
-import com.extremedesign.typeracer.model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

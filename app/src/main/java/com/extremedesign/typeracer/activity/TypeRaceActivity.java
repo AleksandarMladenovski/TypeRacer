@@ -1,28 +1,14 @@
 package com.extremedesign.typeracer.activity;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.util.Log;
 
-import com.extremedesign.typeracer.FirebaseRepo;
 import com.extremedesign.typeracer.fragment.GatherPlayersFragment;
 import com.extremedesign.typeracer.fragment.StartGameFragment;
-import com.extremedesign.typeracer.listener.PlayersReadyListener;
-import com.extremedesign.typeracer.model.FriendlyPlayer;
-import com.extremedesign.typeracer.model.User;
-import com.extremedesign.typeracer.PlayerListAdapter;
 import com.extremedesign.typeracer.R;
-import com.extremedesign.typeracer.model.UserInfo;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
+import com.extremedesign.typeracer.model.FriendlyPlayer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TypeRaceActivity extends AppCompatActivity {
@@ -41,12 +27,7 @@ public class TypeRaceActivity extends AppCompatActivity {
 //
     }
     private PlayersReadyListener getPlayersReadyListener(){
-        return new PlayersReadyListener() {
-            @Override
-            public void onPlayersReady(List<FriendlyPlayer> playerList) {
-                      startGameFragment(playerList);
-            }
-        };
+        return this::startGameFragment;
     }
     private void startGameFragment(List<FriendlyPlayer>playerList){
         getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout_TypeRace,new StartGameFragment(playerList)).commit();

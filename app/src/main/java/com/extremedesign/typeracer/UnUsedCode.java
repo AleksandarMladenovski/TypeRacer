@@ -1,28 +1,5 @@
 package com.extremedesign.typeracer;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-
-import com.extremedesign.typeracer.listener.JobWorker;
-import com.extremedesign.typeracer.listener.ProfileImageListener;
-import com.extremedesign.typeracer.model.ProfileImage;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.storage.ListResult;
-import com.google.firebase.storage.StorageReference;
-
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.List;
-
 public class UnUsedCode {
     //Images
 

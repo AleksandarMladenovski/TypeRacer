@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.extremedesign.typeracer.R;
-import com.extremedesign.typeracer.Utils;
 
 /**
  * A simple {@link Fragment} subclass.
